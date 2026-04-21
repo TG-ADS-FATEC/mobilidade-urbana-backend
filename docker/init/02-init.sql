@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS preference (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    user_id        BIGINT PRIMARY KEY,
+    user_id        BIGSERIAL PRIMARY KEY,
     email          VARCHAR(255) NOT NULL UNIQUE,
     device_token   UUID UNIQUE,
     created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
