@@ -146,7 +146,6 @@ CREATE TABLE IF NOT EXISTS device (
     platform       platform_enum NOT NULL,
     app_version    VARCHAR(50),
     created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS preference (
