@@ -141,30 +141,17 @@ CREATE TABLE IF NOT EXISTS stop_time (
 -- TABELAS DE USUÁRIO
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS users (
-    user_id      BIGINT PRIMARY KEY,
-    email        VARCHAR(255) NOT NULL UNIQUE,
-    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    device_token   UUID NOT NULL,
-
-    CONSTRAINT fk_device_user
-        FOREIGN KEY (device_token) REFERENCES device(device_token)
-        ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS device (
     device_token   UUID PRIMARY KEY,
     platform       platform_enum NOT NULL,
     app_version    VARCHAR(50),
     created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS preference (
     preference_id       BIGSERIAL PRIMARY KEY,
-    user_id             BIGINT NOT NULL UNIQUE,
+    device_token        UUID NOT NULL UNIQUE,
     transport_type      transport_type_enum,
     route_preference    route_preference_enum,
     slow_pace           BOOLEAN NOT NULL DEFAULT FALSE,
@@ -172,12 +159,24 @@ CREATE TABLE IF NOT EXISTS preference (
     created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_preference_user
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
+    CONSTRAINT fk_preference_device
+        FOREIGN KEY (device_token) REFERENCES device(device_token)
         ON DELETE CASCADE,
 
     CONSTRAINT chk_preference_max_walking_time
         CHECK (max_walking_time IS NULL OR max_walking_time >= 0)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id        BIGINT PRIMARY KEY,
+    email          VARCHAR(255) NOT NULL UNIQUE,
+    device_token   UUID,
+    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user_device
+        FOREIGN KEY (device_token) REFERENCES device(device_token)
+        ON DELETE SET NULL
 );
 
 -- =========================================================
