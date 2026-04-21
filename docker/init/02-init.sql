@@ -151,7 +151,6 @@ CREATE TABLE IF NOT EXISTS device (
 
 CREATE TABLE IF NOT EXISTS preference (
     preference_id       BIGSERIAL PRIMARY KEY,
-    device_token        UUID NOT NULL UNIQUE,
     transport_type      transport_type_enum,
     route_preference    route_preference_enum,
     slow_pace           BOOLEAN NOT NULL DEFAULT FALSE,
@@ -159,23 +158,24 @@ CREATE TABLE IF NOT EXISTS preference (
     created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_preference_device
-        FOREIGN KEY (device_token) REFERENCES device(device_token)
-        ON DELETE CASCADE,
-
     CONSTRAINT chk_preference_max_walking_time
         CHECK (max_walking_time IS NULL OR max_walking_time >= 0)
 );
 
-CREATE TABLE IF NOT EXISTS users (
-    user_id        BIGSERIAL PRIMARY KEY,
-    email          VARCHAR(255) NOT NULL UNIQUE,
-    device_token   UUID UNIQUE,
-    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE IF NOT EXISTS profiles (
+    profile_id         BIGSERIAL PRIMARY KEY,
+    email              VARCHAR(255) UNIQUE,
+    device_token       UUID UNIQUE,
+    preference_id      BIGINT,
+    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_user_device
         FOREIGN KEY (device_token) REFERENCES device(device_token)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_user_preference
+        FOREIGN KEY (preference_id) REFERENCES preference(preference_id)
         ON DELETE SET NULL
 );
 
