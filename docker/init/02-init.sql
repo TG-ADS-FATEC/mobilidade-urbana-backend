@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS preference (
 CREATE TABLE IF NOT EXISTS users (
     user_id        BIGINT PRIMARY KEY,
     email          VARCHAR(255) NOT NULL UNIQUE,
-    device_token   UUID,
+    device_token   UUID UNIQUE,
     created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -213,63 +213,58 @@ CREATE INDEX IF NOT EXISTS idx_stop_location
 CREATE INDEX IF NOT EXISTS idx_shape_geometry
     ON shape USING GIST (geometry);
 
-CREATE INDEX IF NOT EXISTS idx_device_user_id
-    ON device (user_id);
-
-CREATE INDEX IF NOT EXISTS idx_preference_user_id
-    ON preference (user_id);
-
 CREATE INDEX IF NOT EXISTS idx_users_email
     ON users(email);
 
+CREATE INDEX IF NOT EXISTS idx_users_device_token
+    ON users(device_token);
+
+CREATE INDEX IF NOT EXISTS idx_preference_device_token
+    ON preference(device_token);
+
 -- =========================================================
--- DROP DE VIEWS
+-- VIEWS
 -- =========================================================
 
 DROP VIEW IF EXISTS vw_device_with_user;
 DROP VIEW IF EXISTS vw_preference_with_user;
 DROP VIEW IF EXISTS vw_user_full_profile;
 
--- =========================================================
--- VIEWS
--- =========================================================
-
 CREATE OR REPLACE VIEW vw_device_with_user AS
 SELECT
-    u.user_id,
-    u.email,
-    u.created_at AS user_created_at,
-    u.updated_at AS user_updated_at,
     d.device_token,
     d.platform,
     d.app_version,
     d.created_at AS device_created_at,
-    d.updated_at AS device_updated_at
-FROM users u
-INNER JOIN device d
-    ON d.user_id = u.user_id;
+    d.updated_at AS device_updated_at,
+    u.user_id,
+    u.email,
+    u.created_at AS user_created_at,
+    u.updated_at AS user_updated_at
+FROM device d
+LEFT JOIN users u
+    ON u.device_token = d.device_token;
 
 CREATE OR REPLACE VIEW vw_preference_with_user AS
 SELECT
-    u.user_id,
-    u.email,
     p.preference_id,
+    p.device_token,
     p.transport_type,
     p.route_preference,
     p.slow_pace,
     p.max_walking_time,
-    p.created_at,
-    p.updated_at
-FROM users u
-INNER JOIN preference p
-    ON p.user_id = u.user_id;
-
-CREATE OR REPLACE VIEW vw_user_full_profile AS
-SELECT
+    p.created_at AS preference_created_at,
+    p.updated_at AS preference_updated_at,
     u.user_id,
     u.email,
     u.created_at AS user_created_at,
-    u.updated_at AS user_updated_at,
+    u.updated_at AS user_updated_at
+FROM preference p
+LEFT JOIN users u
+    ON u.device_token = p.device_token;
+
+CREATE OR REPLACE VIEW vw_user_full_profile AS
+SELECT
     d.device_token,
     d.platform,
     d.app_version,
@@ -281,12 +276,16 @@ SELECT
     p.slow_pace,
     p.max_walking_time,
     p.created_at AS preference_created_at,
-    p.updated_at AS preference_updated_at
-FROM users u
-LEFT JOIN device d
-    ON d.user_id = u.user_id
+    p.updated_at AS preference_updated_at,
+    u.user_id,
+    u.email,
+    u.created_at AS user_created_at,
+    u.updated_at AS user_updated_at
+FROM device d
 LEFT JOIN preference p
-    ON p.user_id = u.user_id;
+    ON p.device_token = d.device_token
+LEFT JOIN users u
+    ON u.device_token = d.device_token;
 
 -- =========================================================
 -- FUNCTIONS
@@ -328,9 +327,7 @@ EXECUTE FUNCTION fn_set_updated_at();
 -- STORED PROCEDURES
 -- =========================================================
 
-DROP PROCEDURE IF EXISTS sp_create_user_device_preference(
-    BIGINT,
-    VARCHAR,
+DROP PROCEDURE IF EXISTS sp_create_device_preference(
     UUID,
     platform_enum,
     VARCHAR,
@@ -340,9 +337,7 @@ DROP PROCEDURE IF EXISTS sp_create_user_device_preference(
     INTEGER
 );
 
-CREATE OR REPLACE PROCEDURE sp_create_user_device_preference(
-    p_user_id BIGINT,
-    p_email VARCHAR,
+CREATE OR REPLACE PROCEDURE sp_create_device_preference(
     p_device_token UUID,
     p_platform platform_enum,
     p_app_version VARCHAR,
@@ -354,37 +349,37 @@ CREATE OR REPLACE PROCEDURE sp_create_user_device_preference(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO users (user_id, email)
-    VALUES (p_user_id, p_email)
-    ON CONFLICT (user_id)
-    DO UPDATE SET
-        email = EXCLUDED.email,
-        updated_at = CURRENT_TIMESTAMP;
-
-    INSERT INTO device (device_token, user_id, platform, app_version)
-    VALUES (p_device_token, p_user_id, p_platform, p_app_version)
+    INSERT INTO device (
+        device_token,
+        platform,
+        app_version
+    )
+    VALUES (
+        p_device_token,
+        p_platform,
+        p_app_version
+    )
     ON CONFLICT (device_token)
     DO UPDATE SET
-        user_id = EXCLUDED.user_id,
         platform = EXCLUDED.platform,
         app_version = EXCLUDED.app_version,
         updated_at = CURRENT_TIMESTAMP;
 
     INSERT INTO preference (
-        user_id,
+        device_token,
         transport_type,
         route_preference,
         slow_pace,
         max_walking_time
     )
     VALUES (
-        p_user_id,
+        p_device_token,
         p_transport_type,
         p_route_preference,
         COALESCE(p_slow_pace, FALSE),
         p_max_walking_time
     )
-    ON CONFLICT (user_id)
+    ON CONFLICT (device_token)
     DO UPDATE SET
         transport_type = EXCLUDED.transport_type,
         route_preference = EXCLUDED.route_preference,
@@ -394,8 +389,40 @@ BEGIN
 END;
 $$;
 
-DROP PROCEDURE IF EXISTS sp_upsert_preference(
+DROP PROCEDURE IF EXISTS sp_create_or_link_user(
     BIGINT,
+    VARCHAR,
+    UUID
+);
+
+CREATE OR REPLACE PROCEDURE sp_create_or_link_user(
+    p_user_id BIGINT,
+    p_email VARCHAR,
+    p_device_token UUID
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO users (
+        user_id,
+        email,
+        device_token
+    )
+    VALUES (
+        p_user_id,
+        p_email,
+        p_device_token
+    )
+    ON CONFLICT (user_id)
+    DO UPDATE SET
+        email = EXCLUDED.email,
+        device_token = EXCLUDED.device_token,
+        updated_at = CURRENT_TIMESTAMP;
+END;
+$$;
+
+DROP PROCEDURE IF EXISTS sp_upsert_preference(
+    UUID,
     transport_type_enum,
     route_preference_enum,
     BOOLEAN,
@@ -403,7 +430,7 @@ DROP PROCEDURE IF EXISTS sp_upsert_preference(
 );
 
 CREATE OR REPLACE PROCEDURE sp_upsert_preference(
-    p_user_id BIGINT,
+    p_device_token UUID,
     p_transport_type transport_type_enum,
     p_route_preference route_preference_enum,
     p_slow_pace BOOLEAN,
@@ -413,20 +440,20 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO preference (
-        user_id,
+        device_token,
         transport_type,
         route_preference,
         slow_pace,
         max_walking_time
     )
     VALUES (
-        p_user_id,
+        p_device_token,
         p_transport_type,
         p_route_preference,
         COALESCE(p_slow_pace, FALSE),
         p_max_walking_time
     )
-    ON CONFLICT (user_id)
+    ON CONFLICT (device_token)
     DO UPDATE SET
         transport_type = EXCLUDED.transport_type,
         route_preference = EXCLUDED.route_preference,
@@ -441,33 +468,37 @@ $$;
 -- =========================================================
 
 -- INSERT
-INSERT INTO users (user_id, email)
-VALUES (1, 'usuario1@email.com');
+INSERT INTO users (user_id, email, device_token)
+VALUES (
+    1,
+    '',
+    ''
+);
 
--- READ ALL
 SELECT
     user_id,
     email,
+    device_token,
     created_at,
     updated_at
 FROM users
 ORDER BY user_id;
 
--- READ BY ID
 SELECT
     user_id,
     email,
+    device_token,
     created_at,
     updated_at
 FROM users
 WHERE user_id = 1;
 
--- UPDATE
 UPDATE users
-SET email = 'usuario1_novo@email.com'
+SET
+    email = '',
+    device_token = ''
 WHERE user_id = 1;
 
--- DELETE
 DELETE FROM users
 WHERE user_id = 1;
 
@@ -475,19 +506,19 @@ WHERE user_id = 1;
 -- CRUD - DEVICE
 -- =========================================================
 
--- INSERT
-INSERT INTO device (device_token, user_id, platform, app_version)
+INSERT INTO device (
+    device_token,
+    platform,
+    app_version
+)
 VALUES (
-    '550e8400-e29b-41d4-a716-446655440000',
-    1,
+    '',
     'ANDROID',
     '1.0.0'
 );
 
--- READ ALL
 SELECT
     device_token,
-    user_id,
     platform,
     app_version,
     created_at,
@@ -495,63 +526,46 @@ SELECT
 FROM device
 ORDER BY created_at;
 
--- READ BY TOKEN
 SELECT
     device_token,
-    user_id,
     platform,
     app_version,
     created_at,
     updated_at
 FROM device
-WHERE device_token = '550e8400-e29b-41d4-a716-446655440000';
+WHERE device_token = '';
 
--- READ BY USER
-SELECT
-    device_token,
-    user_id,
-    platform,
-    app_version,
-    created_at,
-    updated_at
-FROM device
-WHERE user_id = 1;
-
--- UPDATE
 UPDATE device
 SET
     platform = 'IOS',
     app_version = '1.1.0'
-WHERE device_token = '550e8400-e29b-41d4-a716-446655440000';
+WHERE device_token = '';
 
--- DELETE
 DELETE FROM device
-WHERE device_token = '550e8400-e29b-41d4-a716-446655440000';
+WHERE device_token = '';
 
 -- =========================================================
 -- CRUD - PREFERENCE
 -- =========================================================
 
--- INSERT
 INSERT INTO preference (
-    user_id,
+    device_token,
     transport_type,
     route_preference,
     slow_pace,
     max_walking_time
 )
 VALUES (
-    1,
-    'BUS',
-    'FASTEST',
+    '',
+    '',
+    '',
     FALSE,
     15
 );
 
--- READ ALL
 SELECT
     preference_id,
-    user_id,
+    device_token,
     transport_type,
     route_preference,
     slow_pace,
@@ -561,10 +575,9 @@ SELECT
 FROM preference
 ORDER BY preference_id;
 
--- READ BY ID
 SELECT
     preference_id,
-    user_id,
+    device_token,
     transport_type,
     route_preference,
     slow_pace,
@@ -574,10 +587,9 @@ SELECT
 FROM preference
 WHERE preference_id = 1;
 
--- READ BY USER
 SELECT
     preference_id,
-    user_id,
+    device_token,
     transport_type,
     route_preference,
     slow_pace,
@@ -585,30 +597,26 @@ SELECT
     created_at,
     updated_at
 FROM preference
-WHERE user_id = 1;
+WHERE device_token = '';
 
--- UPDATE
 UPDATE preference
 SET
     transport_type = 'SUBWAY',
     route_preference = 'LESS_WALKING',
     slow_pace = TRUE,
     max_walking_time = 8
-WHERE user_id = 1;
+WHERE device_token = '';
 
--- DELETE
 DELETE FROM preference
-WHERE user_id = 1;
+WHERE device_token = '';
+
 
 -- =========================================================
 -- USO DAS STORED PROCEDURES
 -- =========================================================
 
--- CRIA OU ATUALIZA USER, DEVICE E PREFERENCE DE UMA VEZ
-CALL sp_create_user_device_preference(
-    2,
-    'usuario2@email.com',
-    '123e4567-e89b-12d3-a456-426614174000',
+CALL sp_create_device_preference(
+    '',
     'ANDROID',
     '2.0.0',
     'TRAIN',
@@ -617,9 +625,14 @@ CALL sp_create_user_device_preference(
     10
 );
 
--- INSERE OU ATUALIZA PREFERENCE AUTOMATICAMENTE
-CALL sp_upsert_preference(
+CALL sp_create_or_link_user(
     2,
+    '',
+    ''
+);
+
+CALL sp_upsert_preference(
+    '',
     'SUBWAY',
     'LESS_WALKING',
     FALSE,
