@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -14,10 +15,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="preference")
 public class Preference {
 	
 	@Id
@@ -33,6 +37,9 @@ public class Preference {
 	private Boolean slowPace;
 	private Integer maxWalkingTime;
 	private LocalDateTime updatedAt;
+	
+	@OneToOne(mappedBy="preference", cascade=CascadeType.ALL)
+	private User user;
 	
 	public Preference() {}
 	

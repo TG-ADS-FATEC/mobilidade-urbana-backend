@@ -3,8 +3,10 @@ package com.sptrans.mobilidade_urbana.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -17,6 +19,9 @@ public class Device {
 	private Platform platform;
 	private String appVersion;
 	private LocalDateTime createdAt;
+	
+	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
+	private User user; 
 	
 	public Device() {}
 
