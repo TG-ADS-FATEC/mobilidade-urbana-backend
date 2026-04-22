@@ -2,10 +2,6 @@ spring:
   config:
    activate:
     on-profile: dev
-  datasource:
-   url: jdbc:postgresql://postgres:5432/mobilidade_urbana_dev
-   username: ${DB_USER}
-   password: ${DB_PASSWORD}
    
   jpa:
    hibernate:

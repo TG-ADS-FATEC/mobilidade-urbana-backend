@@ -286,14 +286,6 @@ DROP TRIGGER IF EXISTS trg_profiles_set_updated_at ON profiles;
 DROP TRIGGER IF EXISTS trg_device_set_updated_at   ON device;
 DROP TRIGGER IF EXISTS trg_preference_set_updated_at ON preference;
 
-CREATE OR REPLACE FUNCTION fn_set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at := CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE TRIGGER trg_profiles_set_updated_at
 BEFORE UPDATE ON profiles
 FOR EACH ROW
@@ -458,7 +450,7 @@ $$;
 -- =========================================================
 
 CALL sp_create_device_preference(
-    '',
+    '123e4567-e89b-12d3-a456-426614174000',
     'ANDROID',
     '2.0.0',
     'TRAIN',
@@ -467,14 +459,14 @@ CALL sp_create_device_preference(
     10
 );
 
-CALL sp_create_or_link_user(
+CALL sp_create_or_link_profile(
     2,
     '',
     ''
 );
 
 CALL sp_upsert_preference(
-    '',
+    '123e4567-e89b-12d3-a456-426614174000',
     'SUBWAY',
     'LESS_WALKING',
     FALSE,
