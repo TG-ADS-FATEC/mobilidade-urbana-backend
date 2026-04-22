@@ -1,15 +1,131 @@
-Comandos para subir o docker:
+Para iniciar o projeto, utilize o comando docker compose up.
 
-Primeiro use docker compose build --no-cache para uma instalação limpa
+Caso deseje iniciar com o banco de dados de desenvolvedor, coloque docker compose --env-file .env.dev up
 
-Depois use docker compose --env-file .env.dev para iniciar no perfil de desenvolvedor
+Caso deseje iniciar com o banco de dados de produção , coloque docker compose --env-file .env.prod up
 
-Ou use docker compose --env-file .env.prod para iniciar
+Para finalizar e destruir os conteineres utilize docker compose down -v
 
-Para destruir os containeres utilize docker compose down -v
+Para parar a execução utilize docker compose stop
 
-Para para os containeres utilize docker compose stop
 
-Para inicializar os containeres(se você não os destruiu) utilize docker compose start
+=================================================================================================
+# Como rodar o projeto com Docker
 
-Não se esqueça de ter iniciado o docker e preenchido os campos que estão no .env.example .env.dev.example e .envprod.example
+## Pré-requisitos
+
+Antes de tudo, você precisa ter instalado:
+
+* Docker
+* Docker Compose 
+
+---
+
+## Primeira vez (ou quando mudar o banco)
+
+Execute:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+### O que isso faz:
+
+* Remove containers antigos
+* Apaga o banco antigo
+* Recria tudo do zero
+* Executa o script `VersãoMaisRecenteDoBanco.sql`
+* Sobe backend + banco conectados
+
+---
+
+## Rodar no dia a dia
+
+Depois da primeira vez, basta:
+
+```bash
+docker compose up
+```
+
+### Isso:
+
+* Sobe o backend
+* Sobe o banco
+* Mantém os dados
+
+---
+
+## Parar o projeto
+
+```bash
+docker compose down
+```
+
+---
+
+## ⚠️ Quando usar `down -v` novamente?
+
+Use SOMENTE se:
+
+* alterou ou criou um novo script do banco
+* deu erro estranho no banco
+* quer resetar tudo
+* quer apagar dados
+
+---
+
+## Acessos
+
+* Backend: http://localhost:8080
+* Banco: localhost:5432
+
+---
+
+## Observações importantes
+
+* O banco só executa os scripts de `/docker/init` quando é criado pela primeira vez
+* Se não usar `-v`, o banco antigo continua existindo
+* Variáveis de ambiente vêm do `.env`
+* O backend usa automaticamente as configurações do Docker
+
+---
+
+## Problemas comuns
+
+### Erro de conexão com banco
+
+-> Verifique se o `.env` está correto
+
+### Script SQL não rodou
+
+-> Rode:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+### Porta já em uso
+
+-> Feche outro projeto ou mude a porta
+
+---
+
+## Fluxo recomendado
+
+Primeira vez:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+Depois:
+
+```bash
+docker compose up
+ou
+docker compose up --build     
+```
+
