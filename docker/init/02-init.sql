@@ -142,84 +142,62 @@ CREATE TABLE IF NOT EXISTS stop_time (
 -- =========================================================
 
 CREATE TABLE IF NOT EXISTS device (
-    device_token   UUID PRIMARY KEY,
-    platform       platform_enum NOT NULL,
-    app_version    VARCHAR(50),
-    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    device_token UUID PRIMARY KEY,
+    platform      platform_enum NOT NULL,
+    app_version   VARCHAR(50),
+    created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS preference (
-    preference_id       BIGSERIAL PRIMARY KEY,
-    transport_type      transport_type_enum,
-    route_preference    route_preference_enum,
-    slow_pace           BOOLEAN NOT NULL DEFAULT FALSE,
-    max_walking_time    INTEGER,
-    created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+    preference_id    BIGSERIAL PRIMARY KEY,
+    device_token     UUID UNIQUE,
+    transport_type   transport_type_enum,
+    route_preference route_preference_enum,
+    slow_pace        BOOLEAN NOT NULL DEFAULT FALSE,
+    max_walking_time INTEGER,
+    created_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_preference_device
+        FOREIGN KEY (device_token) REFERENCES device(device_token)
+        ON DELETE SET NULL,
     CONSTRAINT chk_preference_max_walking_time
         CHECK (max_walking_time IS NULL OR max_walking_time >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS profiles (
-    profile_id         BIGSERIAL PRIMARY KEY,
-    email              VARCHAR(255) UNIQUE,
-    device_token       UUID UNIQUE,
-    preference_id      BIGINT,
-    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_user_device
+    profile_id    BIGSERIAL PRIMARY KEY,
+    email         VARCHAR(255) UNIQUE,
+    device_token  UUID UNIQUE,
+    preference_id BIGINT,
+    created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_profile_device
         FOREIGN KEY (device_token) REFERENCES device(device_token)
         ON DELETE SET NULL,
-
-    CONSTRAINT fk_user_preference
+    CONSTRAINT fk_profile_preference
         FOREIGN KEY (preference_id) REFERENCES preference(preference_id)
         ON DELETE SET NULL
 );
+
 
 -- =========================================================
 -- ÍNDICES
 -- =========================================================
 
-CREATE INDEX IF NOT EXISTS idx_route_agency_id
-    ON route (agency_id);
-
-CREATE INDEX IF NOT EXISTS idx_trip_route_id
-    ON trip (route_id);
-
-CREATE INDEX IF NOT EXISTS idx_trip_service_id
-    ON trip (service_id);
-
-CREATE INDEX IF NOT EXISTS idx_trip_shape_id
-    ON trip (shape_id);
-
-CREATE INDEX IF NOT EXISTS idx_frequency_trip_id
-    ON frequency (trip_id);
-
-CREATE INDEX IF NOT EXISTS idx_shape_point_shape_id
-    ON shape_point (shape_id);
-
-CREATE INDEX IF NOT EXISTS idx_stop_time_trip_id
-    ON stop_time (trip_id);
-
-CREATE INDEX IF NOT EXISTS idx_stop_time_stop_id
-    ON stop_time (stop_id);
-
-CREATE INDEX IF NOT EXISTS idx_stop_location
-    ON stop USING GIST (location);
-
-CREATE INDEX IF NOT EXISTS idx_shape_geometry
-    ON shape USING GIST (geometry);
-
-CREATE INDEX IF NOT EXISTS idx_users_email
-    ON users(email);
-
-CREATE INDEX IF NOT EXISTS idx_users_device_token
-    ON users(device_token);
-
-CREATE INDEX IF NOT EXISTS idx_preference_device_token
-    ON preference(device_token);
+CREATE INDEX IF NOT EXISTS idx_route_agency_id     ON route (agency_id);
+CREATE INDEX IF NOT EXISTS idx_trip_route_id       ON trip (route_id);
+CREATE INDEX IF NOT EXISTS idx_trip_service_id     ON trip (service_id);
+CREATE INDEX IF NOT EXISTS idx_trip_shape_id       ON trip (shape_id);
+CREATE INDEX IF NOT EXISTS idx_frequency_trip_id   ON frequency (trip_id);
+CREATE INDEX IF NOT EXISTS idx_shape_point_shape_id ON shape_point (shape_id);
+CREATE INDEX IF NOT EXISTS idx_stop_time_trip_id   ON stop_time (trip_id);
+CREATE INDEX IF NOT EXISTS idx_stop_time_stop_id   ON stop_time (stop_id);
+CREATE INDEX IF NOT EXISTS idx_stop_location       ON stop USING GIST (location);
+CREATE INDEX IF NOT EXISTS idx_shape_geometry      ON shape USING GIST (geometry);
+CREATE INDEX IF NOT EXISTS idx_profiles_email      ON profiles(email);
+CREATE INDEX IF NOT EXISTS idx_profiles_device_token ON profiles(device_token);
+CREATE INDEX IF NOT EXISTS idx_preference_device_token ON preference(device_token);
 
 -- =========================================================
 -- VIEWS
@@ -236,31 +214,31 @@ SELECT
     d.app_version,
     d.created_at AS device_created_at,
     d.updated_at AS device_updated_at,
-    u.user_id,
-    u.email,
-    u.created_at AS user_created_at,
-    u.updated_at AS user_updated_at
+    p.profile_id,
+    p.email,
+    p.created_at AS profile_created_at,
+    p.updated_at AS profile_updated_at
 FROM device d
-LEFT JOIN users u
-    ON u.device_token = d.device_token;
+LEFT JOIN profiles p
+    ON p.device_token = d.device_token;
 
 CREATE OR REPLACE VIEW vw_preference_with_user AS
 SELECT
-    p.preference_id,
-    p.device_token,
-    p.transport_type,
-    p.route_preference,
-    p.slow_pace,
-    p.max_walking_time,
-    p.created_at AS preference_created_at,
-    p.updated_at AS preference_updated_at,
-    u.user_id,
-    u.email,
-    u.created_at AS user_created_at,
-    u.updated_at AS user_updated_at
-FROM preference p
-LEFT JOIN users u
-    ON u.device_token = p.device_token;
+    pr.preference_id,
+    pr.device_token,
+    pr.transport_type,
+    pr.route_preference,
+    pr.slow_pace,
+    pr.max_walking_time,
+    pr.created_at AS preference_created_at,
+    pr.updated_at AS preference_updated_at,
+    p.profile_id,
+    p.email,
+    p.created_at AS profile_created_at,
+    p.updated_at AS profile_updated_at
+FROM preference pr
+LEFT JOIN profiles p
+    ON p.device_token = pr.device_token;
 
 CREATE OR REPLACE VIEW vw_user_full_profile AS
 SELECT
@@ -269,22 +247,23 @@ SELECT
     d.app_version,
     d.created_at AS device_created_at,
     d.updated_at AS device_updated_at,
-    p.preference_id,
-    p.transport_type,
-    p.route_preference,
-    p.slow_pace,
-    p.max_walking_time,
-    p.created_at AS preference_created_at,
-    p.updated_at AS preference_updated_at,
-    u.user_id,
-    u.email,
-    u.created_at AS user_created_at,
-    u.updated_at AS user_updated_at
+    pr.preference_id,
+    pr.transport_type,
+    pr.route_preference,
+    pr.slow_pace,
+    pr.max_walking_time,
+    pr.created_at AS preference_created_at,
+    pr.updated_at AS preference_updated_at,
+    p.profile_id,
+    p.email,
+    p.created_at AS profile_created_at,
+    p.updated_at AS profile_updated_at
 FROM device d
-LEFT JOIN preference p
-    ON p.device_token = d.device_token
-LEFT JOIN users u
-    ON u.device_token = d.device_token;
+LEFT JOIN preference pr
+    ON pr.device_token = d.device_token
+LEFT JOIN profiles p
+    ON p.device_token = d.device_token;
+
 
 -- =========================================================
 -- FUNCTIONS
@@ -303,12 +282,20 @@ $$ LANGUAGE plpgsql;
 -- TRIGGERS
 -- =========================================================
 
-DROP TRIGGER IF EXISTS trg_users_set_updated_at ON users;
-DROP TRIGGER IF EXISTS trg_device_set_updated_at ON device;
+DROP TRIGGER IF EXISTS trg_profiles_set_updated_at ON profiles;
+DROP TRIGGER IF EXISTS trg_device_set_updated_at   ON device;
 DROP TRIGGER IF EXISTS trg_preference_set_updated_at ON preference;
 
-CREATE TRIGGER trg_users_set_updated_at
-BEFORE UPDATE ON users
+CREATE OR REPLACE FUNCTION fn_set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at := CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_profiles_set_updated_at
+BEFORE UPDATE ON profiles
 FOR EACH ROW
 EXECUTE FUNCTION fn_set_updated_at();
 
@@ -388,35 +375,39 @@ BEGIN
 END;
 $$;
 
-DROP PROCEDURE IF EXISTS sp_create_or_link_user(
+-- =========================================================
+-- PROCEDURE PARA CRIAR OU ATUALIZAR PERFIL
+-- =========================================================
+
+DROP PROCEDURE IF EXISTS sp_create_or_link_profile(
     BIGINT,
     VARCHAR,
     UUID
 );
 
-CREATE OR REPLACE PROCEDURE sp_create_or_link_user(
-    p_user_id BIGINT,
-    p_email VARCHAR,
+CREATE OR REPLACE PROCEDURE sp_create_or_link_profile(
+    p_profile_id BIGINT,
+    p_email      VARCHAR,
     p_device_token UUID
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO users (
-        user_id,
+    INSERT INTO profiles (
+        profile_id,
         email,
         device_token
     )
     VALUES (
-        p_user_id,
+        p_profile_id,
         p_email,
         p_device_token
     )
-    ON CONFLICT (user_id)
+    ON CONFLICT (profile_id)
     DO UPDATE SET
-        email = EXCLUDED.email,
+        email        = EXCLUDED.email,
         device_token = EXCLUDED.device_token,
-        updated_at = CURRENT_TIMESTAMP;
+        updated_at   = CURRENT_TIMESTAMP;
 END;
 $$;
 
@@ -497,4 +488,3 @@ CALL sp_upsert_preference(
 SELECT * FROM vw_device_with_user;
 SELECT * FROM vw_preference_with_user;
 SELECT * FROM vw_user_full_profile;
-
