@@ -125,5 +125,7 @@ Depois:
 
 ```bash
 docker compose up
+ou
+docker compose up --build     
 ```
 
