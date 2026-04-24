@@ -14,12 +14,12 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="users")
-public class User {
+@Table(name="profiles")
+public class Profile {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long userId;
+	private Long profileId;
 	private String email;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -32,14 +32,14 @@ public class User {
 	@JoinColumn(name="preference_id", nullable=false, unique=true)
 	private Preference preference;
 	
-	public User() {}
+	public Profile() {}
 
 	
 
-	public User(Long userId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Device device,
+	public Profile(Long profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Device device,
 			Preference preference) {
 		super();
-		this.userId = userId;
+		this.profileId = profileId;
 		this.email = email;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -62,14 +62,14 @@ public class User {
 
 
 
-	public Long getUserId() {
-		return userId;
+	public Long getProfileId() {
+		return profileId;
 	}
 
 
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setProfileId(Long profileId) {
+		this.profileId = profileId;
 	}
 
 

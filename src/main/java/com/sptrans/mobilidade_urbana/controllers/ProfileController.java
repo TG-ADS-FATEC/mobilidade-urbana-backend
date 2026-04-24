@@ -15,53 +15,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.sptrans.mobilidade_urbana.dto.PreferenceDTO;
-import com.sptrans.mobilidade_urbana.services.PreferenceService;
+import com.sptrans.mobilidade_urbana.dto.ProfileDTO;
+import com.sptrans.mobilidade_urbana.services.ProfileService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value="/preferences")
-public class PreferenceController {
+@RequestMapping(value="/profiles")
+public class ProfileController {
 	
 	@Autowired
-	private PreferenceService service;
+	private ProfileService service;
 	
-	@GetMapping(value = "/{preferenceId}")
-	public ResponseEntity<PreferenceDTO> findById(@PathVariable Long preferenceId){
-		PreferenceDTO dto = service.findById(preferenceId);
+	@GetMapping(value = "/{profileId}")
+	public ResponseEntity<ProfileDTO> findById(@PathVariable Long profileId){
+		ProfileDTO dto = service.findById(profileId);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@GetMapping(value = "/device/{deviceToken}")
-	public ResponseEntity<PreferenceDTO> findByDeviceToken(@PathVariable UUID deviceToken){
-		PreferenceDTO dto = service.findByDeviceToken(deviceToken);
+	public ResponseEntity<ProfileDTO> findByDeviceToken(@PathVariable UUID deviceToken){
+		ProfileDTO dto = service.findByDeviceToken(deviceToken);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@PostMapping
-	public ResponseEntity<PreferenceDTO> insert(@Valid @RequestBody PreferenceDTO dto) {
+	public ResponseEntity<ProfileDTO> insert(@Valid @RequestBody ProfileDTO dto) {
 		dto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{preferenceId}")
-				.buildAndExpand(dto.getPreferenceId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{profileId}")
+				.buildAndExpand(dto.getprofileId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
 	
-	@PutMapping(value = "/{preferenceId}")
-	public ResponseEntity<PreferenceDTO> update(@PathVariable Long preferenceId, @Valid @RequestBody PreferenceDTO dto) {
-		dto = service.update(preferenceId, dto);
+	@PutMapping(value = "/{profileId}")
+	public ResponseEntity<ProfileDTO> update(@PathVariable Long profileId, @Valid @RequestBody ProfileDTO dto) {
+		dto = service.update(profileId, dto);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@PutMapping(value = "/device/{deviceToken}")
-	public ResponseEntity<PreferenceDTO> update(@PathVariable UUID deviceToken, @Valid @RequestBody PreferenceDTO dto) {
+	public ResponseEntity<ProfileDTO> update(@PathVariable UUID deviceToken, @Valid @RequestBody ProfileDTO dto) {
 		dto = service.update(deviceToken, dto);
 		return ResponseEntity.ok(dto);
 	}
 	
-	@DeleteMapping(value = "/{preferenceId}")
-	public ResponseEntity<Void> delete(@PathVariable Long preferenceId) {
-		service.delete(preferenceId);
+	@DeleteMapping(value = "/{profileId}")
+	public ResponseEntity<Void> delete(@PathVariable Long profileId) {
+		service.delete(profileId);
 		return ResponseEntity.noContent().build();
 	}
 	
@@ -70,5 +70,6 @@ public class PreferenceController {
 		service.delete(deviceToken);
 		return ResponseEntity.noContent().build();
 	}
+	
 
 }

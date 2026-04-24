@@ -38,8 +38,12 @@ public class Preference {
 	private Integer maxWalkingTime;
 	private LocalDateTime updatedAt;
 	
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="device_id", nullable=false, unique=true)
+	private Device device;
+	
 	@OneToOne(mappedBy="preference", cascade=CascadeType.ALL)
-	private User user;
+	private Profile profile;
 	
 	public Preference() {}
 	
@@ -113,6 +117,18 @@ public class Preference {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
+
+	public Device getDevice() {
+		return device;
+	}
+
+
+	public void setDevice(Device device) {
+		this.device = device;
+	}
+	
+	
 	
 	
 
