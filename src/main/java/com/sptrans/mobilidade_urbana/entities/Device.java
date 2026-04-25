@@ -21,7 +21,10 @@ public class Device {
 	private LocalDateTime createdAt;
 	
 	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
-	private User user; 
+	private Preference preference; 
+	
+	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
+	private Profile profile; 
 	
 	public Device() {}
 

@@ -3,6 +3,7 @@ package com.sptrans.mobilidade_urbana.dto;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import com.sptrans.mobilidade_urbana.entities.Preference;
 import com.sptrans.mobilidade_urbana.entities.RoutePreference;
@@ -16,11 +17,12 @@ public class PreferenceDTO {
 	private Boolean slowPace;
 	private Integer maxWalkingTime;
 	private LocalDateTime updatedAt;
+	private UUID deviceToken;
 	
 	public PreferenceDTO(){}
-
+	
 	public PreferenceDTO(Long preferenceId, Set<TransportType> transportTypes, RoutePreference routePreference,
-			Boolean slowPace, Integer maxWalkingTime, LocalDateTime updatedAt) {
+			Boolean slowPace, Integer maxWalkingTime, LocalDateTime updatedAt, UUID deviceToken) {
 		super();
 		this.preferenceId = preferenceId;
 		this.transportTypes = transportTypes;
@@ -28,8 +30,11 @@ public class PreferenceDTO {
 		this.slowPace = slowPace;
 		this.maxWalkingTime = maxWalkingTime;
 		this.updatedAt = updatedAt;
+		this.deviceToken = deviceToken;
 	}
-	
+
+
+
 	public PreferenceDTO(Preference entity) {
 		preferenceId = entity.getPreferenceId();
 		transportTypes = entity.getTransportTypes();
@@ -37,6 +42,7 @@ public class PreferenceDTO {
 		slowPace = entity.getSlowPace();
 		maxWalkingTime = entity.getMaxWalkingTime();
 		updatedAt = entity.getUpdatedAt();
+		deviceToken = entity.getDevice().getDeviceToken();
 	}
 
 	public Long getPreferenceId() {
@@ -62,6 +68,11 @@ public class PreferenceDTO {
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
+
+	public UUID getDeviceToken() {
+		return deviceToken;
+	}
+	
 	
 	
 

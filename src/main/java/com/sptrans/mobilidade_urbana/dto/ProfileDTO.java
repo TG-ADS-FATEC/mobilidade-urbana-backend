@@ -3,44 +3,44 @@ package com.sptrans.mobilidade_urbana.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.sptrans.mobilidade_urbana.entities.User;
+import com.sptrans.mobilidade_urbana.entities.Profile;
 
 import jakarta.validation.constraints.Email;
 
-public class UserDTO {
+public class ProfileDTO {
 	
-	private Long userId;
+	private Long profileId;
 	@Email(message = "Email inválido")
 	private String email;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	private UUID deviceId;
+	private UUID deviceToken;
 	private Long preferenceId;
 	
-	public UserDTO() {}
+	public ProfileDTO() {}
 
-	public UserDTO(Long userId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, UUID deviceId,
+	public ProfileDTO(Long profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, UUID deviceToken,
 			Long preferenceId) {
 		super();
-		this.userId = userId;
+		this.profileId = profileId;
 		this.email = email;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.deviceId = deviceId;
+		this.deviceToken = deviceToken;
 		this.preferenceId = preferenceId;
 	}
 	
-	public UserDTO(User entity) {
-		userId = entity.getUserId();
+	public ProfileDTO(Profile entity) {
+		profileId = entity.getProfileId();
 		email = entity.getEmail();
 		createdAt = entity.getCreatedAt();
 		updatedAt = entity.getUpdatedAt();
-		deviceId = entity.getDevice().getDeviceToken();
+		deviceToken = entity.getDevice().getDeviceToken();
 		preferenceId = entity.getPreference().getPreferenceId();
 	}
 
-	public Long getUserId() {
-		return userId;
+	public Long getprofileId() {
+		return profileId;
 	}
 
 	public String getEmail() {
@@ -55,8 +55,8 @@ public class UserDTO {
 		return updatedAt;
 	}
 
-	public UUID getDeviceId() {
-		return deviceId;
+	public UUID getDeviceToken() {
+		return deviceToken;
 	}
 
 	public Long getPreferenceId() {
