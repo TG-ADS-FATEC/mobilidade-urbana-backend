@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.sptrans.mobilidade_urbana.dto.ProfileDTO;
+import com.sptrans.mobilidade_urbana.entities.Device;
 import com.sptrans.mobilidade_urbana.services.ProfileService;
 
 import jakarta.validation.Valid;
@@ -39,8 +41,22 @@ public class ProfileController {
 		return ResponseEntity.ok(dto);
 	}
 	
-	@PostMapping
+	@GetMapping(value = "/me")
+	public ResponseEntity<ProfileDTO> findMyProfile(@AuthenticationPrincipal Device device){
+		ProfileDTO dto = service.findByDeviceToken(device.getDeviceToken());
+		return ResponseEntity.ok(dto);
+	}
+	
+	/*@PostMapping
 	public ResponseEntity<ProfileDTO> insert(@Valid @RequestBody ProfileDTO dto) {
+		dto = service.insert(dto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{profileId}")
+				.buildAndExpand(dto.getprofileId()).toUri();
+		return ResponseEntity.created(uri).body(dto);
+	}*/
+	
+	@PostMapping
+	public ResponseEntity<ProfileDTO> insert(@AuthenticationPrincipal Device device, @Valid @RequestBody ProfileDTO dto) {
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{profileId}")
 				.buildAndExpand(dto.getprofileId()).toUri();
@@ -59,6 +75,12 @@ public class ProfileController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	@PutMapping(value = "/me")
+	public ResponseEntity<ProfileDTO> update(@AuthenticationPrincipal Device device, @Valid @RequestBody ProfileDTO dto) {
+		dto = service.update(device.getDeviceToken(), dto);
+		return ResponseEntity.ok(dto);
+	}
+	
 	@DeleteMapping(value = "/{profileId}")
 	public ResponseEntity<Void> delete(@PathVariable Long profileId) {
 		service.delete(profileId);
@@ -68,6 +90,12 @@ public class ProfileController {
 	@DeleteMapping(value = "/device/{deviceToken}")
 	public ResponseEntity<Void> delete(@PathVariable UUID deviceToken) {
 		service.delete(deviceToken);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@DeleteMapping(value = "/me")
+	public ResponseEntity<Void> delete(@AuthenticationPrincipal Device device) {
+		service.delete(device.getDeviceToken());
 		return ResponseEntity.noContent().build();
 	}
 	

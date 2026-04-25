@@ -1,3 +1,6 @@
 spring:
   application:
     name: mobilidade_urbana
+jwt:
+  secret: ${JWT_SECRET:my-secret-key}
+  expiration: 36000000
