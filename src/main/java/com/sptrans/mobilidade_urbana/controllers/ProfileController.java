@@ -30,20 +30,15 @@ public class ProfileController {
 	private ProfileService service;
 	
 	@GetMapping(value = "/{profileId}")
-	public ResponseEntity<ProfileDTO> findById(@PathVariable Long profileId){
+	public ResponseEntity<ProfileDTO> findById(@PathVariable UUID profileId){
 		ProfileDTO dto = service.findById(profileId);
 		return ResponseEntity.ok(dto);
 	}
 	
-	@GetMapping(value = "/device/{deviceToken}")
-	public ResponseEntity<ProfileDTO> findByDeviceToken(@PathVariable UUID deviceToken){
-		ProfileDTO dto = service.findByDeviceToken(deviceToken);
-		return ResponseEntity.ok(dto);
-	}
 	
 	@GetMapping(value = "/me")
 	public ResponseEntity<ProfileDTO> findMyProfile(@AuthenticationPrincipal Device device){
-		ProfileDTO dto = service.findByDeviceToken(device.getDeviceToken());
+		ProfileDTO dto = service.findByDeviceId(device.getDeviceId());
 		return ResponseEntity.ok(dto);
 	}
 	
@@ -57,45 +52,35 @@ public class ProfileController {
 	
 	@PostMapping
 	public ResponseEntity<ProfileDTO> insert(@AuthenticationPrincipal Device device, @Valid @RequestBody ProfileDTO dto) {
-		dto = service.insert(dto);
+		dto = service.insert(device, dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{profileId}")
 				.buildAndExpand(dto.getprofileId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
 	
 	@PutMapping(value = "/{profileId}")
-	public ResponseEntity<ProfileDTO> update(@PathVariable Long profileId, @Valid @RequestBody ProfileDTO dto) {
+	public ResponseEntity<ProfileDTO> update(@PathVariable UUID profileId, @Valid @RequestBody ProfileDTO dto) {
 		dto = service.update(profileId, dto);
 		return ResponseEntity.ok(dto);
 	}
 	
-	@PutMapping(value = "/device/{deviceToken}")
-	public ResponseEntity<ProfileDTO> update(@PathVariable UUID deviceToken, @Valid @RequestBody ProfileDTO dto) {
-		dto = service.update(deviceToken, dto);
-		return ResponseEntity.ok(dto);
-	}
 	
 	@PutMapping(value = "/me")
 	public ResponseEntity<ProfileDTO> update(@AuthenticationPrincipal Device device, @Valid @RequestBody ProfileDTO dto) {
-		dto = service.update(device.getDeviceToken(), dto);
+		dto = service.updateByDeviceId(device.getDeviceId(), dto);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@DeleteMapping(value = "/{profileId}")
-	public ResponseEntity<Void> delete(@PathVariable Long profileId) {
+	public ResponseEntity<Void> delete(@PathVariable UUID profileId) {
 		service.delete(profileId);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@DeleteMapping(value = "/device/{deviceToken}")
-	public ResponseEntity<Void> delete(@PathVariable UUID deviceToken) {
-		service.delete(deviceToken);
-		return ResponseEntity.noContent().build();
-	}
 	
 	@DeleteMapping(value = "/me")
 	public ResponseEntity<Void> delete(@AuthenticationPrincipal Device device) {
-		service.delete(device.getDeviceToken());
+		service.deleteByDevice(device);
 		return ResponseEntity.noContent().build();
 	}
 	

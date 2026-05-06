@@ -2,7 +2,6 @@ package com.sptrans.mobilidade_urbana.security;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,12 +35,28 @@ public class SecurityFilter extends OncePerRequestFilter {
 			return;
 		}
 		try {
-			UUID deviceToken = tokenService.validateToken(token);
+			TokenData data = tokenService.validateToken(token);
 			
-			Device device = deviceRepository.findById(deviceToken)
-					.orElse(null);
+			if(data==null || data.deviceId()==null) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			
+			Device device = deviceRepository.findById(data.deviceId())
+					.orElseThrow(() -> new RuntimeException("Dispositivo inválido"));
+			
 			
 			if(device == null) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			
+			if(!device.getActive()) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			
+			if(!device.getTokenVersion().equals(data.tokenVersion())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}

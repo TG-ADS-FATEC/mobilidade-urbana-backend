@@ -21,8 +21,8 @@ public class DeviceService {
 	private DeviceRepository repository;
 	
 	@Transactional(readOnly = true)
-	public DeviceDTO findById(UUID deviceToken) {
-		Device device = repository.findById(deviceToken).orElseThrow(
+	public DeviceDTO findById(UUID deviceId) {
+		Device device = repository.findById(deviceId).orElseThrow(
 				() -> new ResourceNotFoundException("Dispositivo não encontrado"));
 		return new DeviceDTO(device);
 	}
@@ -38,12 +38,12 @@ public class DeviceService {
 	
 	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(UUID deviceToken) {
-		if(!repository.existsById(deviceToken)) {
+	public void delete(UUID deviceId) {
+		if(!repository.existsById(deviceId)) {
 			throw new ResourceNotFoundException("Dispositivo inexistente");
 		}
 		try {
-			repository.deleteById(deviceToken);
+			repository.deleteById(deviceId);
 		}
 		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Falha de integridade referencial");
@@ -51,6 +51,7 @@ public class DeviceService {
 	}
 	
 	private void copyDtoToEntity(DeviceDTO dto, Device entity) {
+		entity.setDeviceId(dto.getDeviceId());
 		entity.setDeviceToken(dto.getDeviceToken());
 		entity.setPlatform(dto.getPlatform());
 		entity.setAppVersion(dto.getAppVersion());

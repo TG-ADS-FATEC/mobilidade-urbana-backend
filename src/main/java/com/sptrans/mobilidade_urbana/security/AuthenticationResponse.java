@@ -4,17 +4,17 @@ import java.util.UUID;
 
 public class AuthenticationResponse {
 	
-	private UUID deviceToken;
+	private UUID deviceId;
 	private String token;
 	
-	public AuthenticationResponse(UUID deviceToken, String token) {
+	public AuthenticationResponse(UUID deviceId, String token) {
 		super();
-		this.deviceToken = deviceToken;
+		this.deviceId = deviceId;
 		this.token = token;
 	}
 
-	public UUID getDeviceToken() {
-		return deviceToken;
+	public UUID getDeviceId() {
+		return deviceId;
 	}
 
 	public String getToken() {

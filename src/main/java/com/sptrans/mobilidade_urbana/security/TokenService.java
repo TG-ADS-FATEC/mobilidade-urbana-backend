@@ -24,7 +24,8 @@ public class TokenService {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
 			String token = JWT.create()
 					.withIssuer("auth-api")
-					.withSubject(device.getDeviceToken().toString())
+					.withSubject(device.getDeviceId().toString())
+					.withClaim("tV", device.getTokenVersion())
 					.withExpiresAt(genExpirationDate())
 					.sign(algorithm);
 			return token;
@@ -34,15 +35,19 @@ public class TokenService {
 		}
 	}
 	
-	public UUID validateToken(String token) {
+	public TokenData validateToken(String token) {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
-			return UUID.fromString( JWT.require(algorithm)
+			
+			var decodedJWT = JWT.require(algorithm)
 					.withIssuer("auth-api")
 					.build()
-					.verify(token)
-					.getSubject()
-					);
+					.verify(token);
+			
+			UUID deviceId = UUID.fromString(decodedJWT.getSubject());
+			Integer tokenVersion = decodedJWT.getClaim("tV").asInt();
+					
+			return new TokenData(deviceId, tokenVersion);
 		}
 		catch(JWTVerificationException exception) {
 			throw new RuntimeException("Token inválido ou expirado", exception);

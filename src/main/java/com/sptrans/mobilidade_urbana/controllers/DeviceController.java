@@ -28,35 +28,35 @@ public class DeviceController {
 	@Autowired
 	private DeviceService service;
 	
-	@GetMapping(value = "/{deviceToken}")
-	public ResponseEntity<DeviceDTO> findById(@PathVariable UUID deviceToken){
-		DeviceDTO dto = service.findById(deviceToken);
+	@GetMapping(value = "/{deviceId}")
+	public ResponseEntity<DeviceDTO> findById(@PathVariable UUID deviceId){
+		DeviceDTO dto = service.findById(deviceId);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@GetMapping(value = "/me")
 	public ResponseEntity<DeviceDTO> findById(@AuthenticationPrincipal Device device){
-		DeviceDTO dto = service.findById(device.getDeviceToken());
+		DeviceDTO dto = service.findById(device.getDeviceId());
 		return ResponseEntity.ok(dto);
 	}
 	
 	@PostMapping
 	public ResponseEntity<DeviceDTO> insert(@Valid @RequestBody DeviceDTO dto) {
 		dto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{deviceToken}")
-				.buildAndExpand(dto.getDeviceToken()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{deviceId}")
+				.buildAndExpand(dto.getDeviceId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
 	
-	@DeleteMapping(value = "/{deviceToken}")
-	public ResponseEntity<Void> delete(@PathVariable UUID deviceToken) {
-		service.delete(deviceToken);
+	@DeleteMapping(value = "/{deviceId}")
+	public ResponseEntity<Void> delete(@PathVariable UUID deviceId) {
+		service.delete(deviceId);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping(value = "/me")
 	public ResponseEntity<Void> delete(@AuthenticationPrincipal Device device) {
-		service.delete(device.getDeviceToken());
+		service.delete(device.getDeviceId());
 		return ResponseEntity.noContent().build();
 	}
 
