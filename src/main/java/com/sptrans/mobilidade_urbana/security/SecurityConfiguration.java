@@ -29,7 +29,8 @@ public class SecurityConfiguration {
     			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
     			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
     			.authorizeHttpRequests(auth -> auth
-    					.requestMatchers(HttpMethod.POST, "/authentication/devices").permitAll()
+    					.requestMatchers(HttpMethod.POST, "/authentication/devices/register").permitAll()
+    					.requestMatchers(HttpMethod.POST, "/authentication/devices/refresh").permitAll()
     					.anyRequest().authenticated())
     			.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
     			.build();
