@@ -11,8 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sptrans.mobilidade_urbana.dto.PreferenceDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
 import com.sptrans.mobilidade_urbana.entities.Preference;
-import com.sptrans.mobilidade_urbana.repositories.DeviceRepository;
+import com.sptrans.mobilidade_urbana.entities.Profile;
 import com.sptrans.mobilidade_urbana.repositories.PreferenceRepository;
+import com.sptrans.mobilidade_urbana.repositories.ProfileRepository;
 import com.sptrans.mobilidade_urbana.services.exceptions.DatabaseException;
 import com.sptrans.mobilidade_urbana.services.exceptions.ResourceNotFoundException;
 
@@ -25,32 +26,35 @@ public class PreferenceService {
 	private PreferenceRepository repository;
 	
 	@Autowired
-	private DeviceRepository deviceRepository;
+	private ProfileRepository profileRepository;
 	
 	@Transactional(readOnly = true)
-	public PreferenceDTO findById(Long preferenceId) {
+	public PreferenceDTO findById(UUID preferenceId) {
 		Preference preference = repository.findById(preferenceId).orElseThrow(
 				() -> new ResourceNotFoundException("Preferência não encontrada"));
 		return new PreferenceDTO(preference);
 	}
 	
-	@Transactional(readOnly = true)
-	public PreferenceDTO findByDeviceToken(UUID deviceToken) {
-		Preference preference = repository.findByDevice_DeviceToken(deviceToken).orElseThrow(
-				() -> new ResourceNotFoundException("Preferência não encontrada"));
+	
+	@Transactional
+	public PreferenceDTO insert(Device device, PreferenceDTO dto) {
+		Preference preference = new Preference();
+		copyDtoToEntity(dto, preference);
+		
+		preference = repository.save(preference);
+		
+		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
+				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
+		
+		profile.setPreference(preference);
+		
+		profileRepository.save(profile);
+		
 		return new PreferenceDTO(preference);
 	}
 	
 	@Transactional
-	public PreferenceDTO insert(PreferenceDTO dto) {
-		Preference entity = new Preference();
-		copyDtoToEntity(dto, entity);
-		entity = repository.save(entity);
-		return new PreferenceDTO(entity);
-	}
-	
-	@Transactional
-	public PreferenceDTO update(Long preferenceId, PreferenceDTO dto) {
+	public PreferenceDTO update(UUID preferenceId, PreferenceDTO dto) {
 		try {
 			Preference entity = repository.getReferenceById(preferenceId);
 			copyDtoToEntity(dto, entity);
@@ -62,22 +66,9 @@ public class PreferenceService {
 		}
 	}
 	
-	@Transactional
-	public PreferenceDTO update(UUID deviceToken, PreferenceDTO dto) {
-		try {
-			Preference entity = repository.findByDevice_DeviceToken(deviceToken).
-					orElseThrow(() -> new ResourceNotFoundException("Preferência não encontrada"));
-			copyDtoToEntity(dto, entity);
-			entity = repository.save(entity);
-			return new PreferenceDTO(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Preferência não encontrada");
-		}
-	}
 	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(Long preferenceId) {
+	public void delete(UUID preferenceId) {
 		if(!repository.existsById(preferenceId)) {
 			throw new ResourceNotFoundException("Preferência inexistente");
 		}
@@ -89,26 +80,45 @@ public class PreferenceService {
 		}
 	}
 	
+	@Transactional
+	public PreferenceDTO findByDevice(Device device) {
+		 Preference preference = repository.findByDeviceId(device.getDeviceId())
+				.orElseThrow(() -> new RuntimeException("Preferência não encontrada"));
+		 
+		 return new PreferenceDTO(preference);
+	}
+	
+	@Transactional
+	public PreferenceDTO update(Device device, PreferenceDTO dto) {
+		Preference preference = repository.findByDeviceId(device.getDeviceId())
+		.orElseThrow(() -> new RuntimeException("Preferência não encontrada"));
+		
+		copyDtoToEntity(dto, preference);
+		
+		preference = repository.save(preference);
+		
+		return new PreferenceDTO(preference);
+	}
+	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(UUID deviceToken) {
-		Preference entity = repository.findByDevice_DeviceToken(deviceToken).
-				orElseThrow(() -> new ResourceNotFoundException("Preferência não encontrada"));
+	public void delete(Device device) {
+		Preference preference = repository.findByDeviceId(device.getDeviceId())
+				.orElseThrow(() -> new ResourceNotFoundException("Preferência inexistente"));
 		try {
-			repository.delete(entity);
+			repository.delete(preference);
 		}
-		catch (DataIntegrityViolationException e) {
+		catch(DataIntegrityViolationException e) {
 			throw new DatabaseException("Falha de integridade referencial");
 		}
+		
 	}
+	
 	
 	private void copyDtoToEntity(PreferenceDTO dto, Preference entity) {
 		entity.setTransportTypes(dto.getTransportTypes());
 		entity.setRoutePreference(dto.getRoutePreference());
 		entity.setSlowPace(dto.getSlowPace());
 		entity.setMaxWalkingTime(dto.getMaxWalkingTime());
-		Device device = deviceRepository.findById(dto.getDeviceToken())
-		        .orElseThrow(() -> new ResourceNotFoundException("Dispositivo não encontrado"));
-		entity.setDevice(device);
 	}
 
 }

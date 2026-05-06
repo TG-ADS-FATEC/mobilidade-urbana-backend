@@ -3,6 +3,7 @@ package com.sptrans.mobilidade_urbana.entities;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -25,8 +26,9 @@ import jakarta.persistence.Table;
 public class Preference {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long preferenceId;
+	@GeneratedValue(strategy=GenerationType.UUID)
+	@Column(updatable = false, nullable=false)
+	private UUID preferenceId;
 	@ElementCollection(targetClass = TransportType.class)
 	@Enumerated(EnumType.STRING)
 	@CollectionTable(name = "preference_transport_types", joinColumns = @JoinColumn(name = "preference_id"))
@@ -38,17 +40,14 @@ public class Preference {
 	private Integer maxWalkingTime;
 	private LocalDateTime updatedAt;
 	
-	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="device_id", nullable=false, unique=true)
-	private Device device;
 	
-	@OneToOne(mappedBy="preference", cascade=CascadeType.ALL)
+	@OneToOne(mappedBy="preference")
 	private Profile profile;
 	
 	public Preference() {}
 	
 
-	public Preference(Long preferenceId, Set<TransportType> transportTypes, RoutePreference routePreference,
+	public Preference(UUID preferenceId, Set<TransportType> transportTypes, RoutePreference routePreference,
 			Boolean slowPace, Integer maxWalkingTime, LocalDateTime updatedAt) {
 		super();
 		this.preferenceId = preferenceId;
@@ -70,11 +69,11 @@ public class Preference {
 	}
 
 
-	public Long getPreferenceId() {
+	public UUID getPreferenceId() {
 		return preferenceId;
 	}
 
-	public void setPreferenceId(Long preferenceId) {
+	public void setPreferenceId(UUID preferenceId) {
 		this.preferenceId = preferenceId;
 	}
 
@@ -117,19 +116,6 @@ public class Preference {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-
-	public Device getDevice() {
-		return device;
-	}
-
-
-	public void setDevice(Device device) {
-		this.device = device;
-	}
-	
-	
-	
 	
 
 }

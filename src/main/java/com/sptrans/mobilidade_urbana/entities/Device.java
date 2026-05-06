@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -15,30 +18,43 @@ import jakarta.persistence.Table;
 public class Device {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@Column(updatable = false, nullable=false)
+	private UUID deviceId;
+	@Column(unique = true, nullable=false)
 	private UUID deviceToken;
 	private Platform platform;
 	private String appVersion;
+	@Column(nullable = false)
+	private Boolean active = true;
+	@Column(nullable = false)
+	private Integer tokenVersion = 0;
 	private LocalDateTime createdAt;
 	
-	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
-	private Preference preference; 
-	
-	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
+	@OneToOne(mappedBy="device")
 	private Profile profile; 
 	
 	public Device() {}
-
-	public Device(UUID deviceToken, Platform platform, String appVersion, LocalDateTime createdAt) {
+	
+	public Device(UUID deviceId, UUID deviceToken, Platform platform, String appVersion) {
 		super();
+		this.deviceId = deviceId;
 		this.deviceToken = deviceToken;
 		this.platform = platform;
 		this.appVersion = appVersion;
-		this.createdAt = createdAt;
 	}
-	
+
 	@PrePersist
 	public void prePersist() {
 		this.createdAt = LocalDateTime.now();
+	}
+
+	public UUID getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(UUID deviceId) {
+		this.deviceId = deviceId;
 	}
 
 	public UUID getDeviceToken() {
@@ -65,6 +81,22 @@ public class Device {
 		this.appVersion = appVersion;
 	}
 
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Integer getTokenVersion() {
+		return tokenVersion;
+	}
+
+	public void setTokenVersion(Integer tokenVersion) {
+		this.tokenVersion = tokenVersion;
+	}
+
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -72,7 +104,8 @@ public class Device {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
 	
-	
+		
 
 }

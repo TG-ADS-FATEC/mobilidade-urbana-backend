@@ -1,8 +1,10 @@
 package com.sptrans.mobilidade_urbana.entities;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,25 +20,26 @@ import jakarta.persistence.Table;
 public class Profile {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long profileId;
+	@GeneratedValue(strategy=GenerationType.UUID)
+	@Column(updatable = false, nullable=false)
+	private UUID profileId;
 	private String email;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name="device_id", nullable=false, unique=true)
 	private Device device;
 	
-	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="preference_id", nullable=false, unique=true)
+	@OneToOne(cascade=CascadeType.ALL, orphanRemoval= true)
+	@JoinColumn(name="preference_id", nullable=true, unique=true)
 	private Preference preference;
 	
 	public Profile() {}
 
 	
 
-	public Profile(Long profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Device device,
+	public Profile(UUID profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Device device,
 			Preference preference) {
 		super();
 		this.profileId = profileId;
@@ -62,13 +65,13 @@ public class Profile {
 
 
 
-	public Long getProfileId() {
+	public UUID getProfileId() {
 		return profileId;
 	}
 
 
 
-	public void setProfileId(Long profileId) {
+	public void setProfileId(UUID profileId) {
 		this.profileId = profileId;
 	}
 

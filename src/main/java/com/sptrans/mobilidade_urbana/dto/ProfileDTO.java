@@ -9,24 +9,24 @@ import jakarta.validation.constraints.Email;
 
 public class ProfileDTO {
 	
-	private Long profileId;
+	private UUID profileId;
 	@Email(message = "Email inválido")
 	private String email;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	private UUID deviceToken;
-	private Long preferenceId;
+	private UUID deviceId;
+	private UUID preferenceId;
 	
 	public ProfileDTO() {}
 
-	public ProfileDTO(Long profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, UUID deviceToken,
-			Long preferenceId) {
+	public ProfileDTO(UUID profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, UUID deviceId,
+			UUID preferenceId) {
 		super();
 		this.profileId = profileId;
 		this.email = email;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.deviceToken = deviceToken;
+		this.deviceId = deviceId;
 		this.preferenceId = preferenceId;
 	}
 	
@@ -35,11 +35,17 @@ public class ProfileDTO {
 		email = entity.getEmail();
 		createdAt = entity.getCreatedAt();
 		updatedAt = entity.getUpdatedAt();
-		deviceToken = entity.getDevice().getDeviceToken();
-		preferenceId = entity.getPreference().getPreferenceId();
+		deviceId = entity.getDevice().getDeviceId();
+		if(entity.getPreference()!=null) {
+			preferenceId = entity.getPreference().getPreferenceId();
+		}
+		else {
+			preferenceId = null;
+		}
+		
 	}
 
-	public Long getprofileId() {
+	public UUID getprofileId() {
 		return profileId;
 	}
 
@@ -55,11 +61,11 @@ public class ProfileDTO {
 		return updatedAt;
 	}
 
-	public UUID getDeviceToken() {
-		return deviceToken;
+	public UUID getDeviceId() {
+		return deviceId;
 	}
 
-	public Long getPreferenceId() {
+	public UUID getPreferenceId() {
 		return preferenceId;
 	}
 	

@@ -33,29 +33,36 @@ public class ProfileService {
 	private PreferenceRepository preferenceRepository;
 	
 	@Transactional(readOnly = true)
-	public ProfileDTO findById(Long profileId) {
+	public ProfileDTO findById(UUID profileId) {
 		Profile profile = repository.findById(profileId).orElseThrow(
-				() -> new ResourceNotFoundException("Usuário não encontrado"));
+				() -> new ResourceNotFoundException("Perfil não encontrado"));
 		return new ProfileDTO(profile);
 	}
 	
 	@Transactional(readOnly = true)
-	public ProfileDTO findByDeviceToken(UUID deviceToken) {
-		Profile profile = repository.findByDevice_DeviceToken(deviceToken).orElseThrow(
-				() -> new ResourceNotFoundException("Usuário não encontrado"));
+	public ProfileDTO findByDeviceId(UUID deviceId) {
+		Profile profile = repository.findByDevice_DeviceId(deviceId).orElseThrow(
+				() -> new ResourceNotFoundException("Perfil não encontrado"));
 		return new ProfileDTO(profile);
 	}
 	
 	@Transactional
-	public ProfileDTO insert(ProfileDTO dto) {
+	public ProfileDTO insert(Device device, ProfileDTO dto) {
 		Profile entity = new Profile();
-		copyDtoToEntity(dto, entity);
+		
+		entity.setEmail(dto.getEmail());
+		entity.setDevice(device);
+		if(dto.getPreferenceId() != null) {
+		Preference preference = preferenceRepository.findById(dto.getPreferenceId())
+		        .orElseThrow(() -> new ResourceNotFoundException("Preferência não encontrada"));
+		entity.setPreference(preference);
+		}
 		entity = repository.save(entity);
 		return new ProfileDTO(entity);
 	}
 	
 	@Transactional
-	public ProfileDTO update(Long profileId, ProfileDTO dto) {
+	public ProfileDTO update(UUID profileId, ProfileDTO dto) {
 		try {
 			Profile entity = repository.getReferenceById(profileId);
 			copyDtoToEntity(dto, entity);
@@ -63,28 +70,28 @@ public class ProfileService {
 			return new ProfileDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Usuário não encontrado");
+			throw new ResourceNotFoundException("Perfil não encontrado");
 		}
 	}
 	
 	@Transactional
-	public ProfileDTO update(UUID deviceToken, ProfileDTO dto) {
+	public ProfileDTO updateByDeviceId(UUID deviceId, ProfileDTO dto) {
 		try {
-			Profile entity = repository.findByDevice_DeviceToken(deviceToken).
-					orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+			Profile entity = repository.findByDevice_DeviceId(deviceId).
+					orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new ProfileDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Usuário não encontrada");
+			throw new ResourceNotFoundException("Perfil não encontrado");
 		}
 	}
 	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(Long profileId) {
+	public void delete(UUID profileId) {
 		if(!repository.existsById(profileId)) {
-			throw new ResourceNotFoundException("Usuário inexistente");
+			throw new ResourceNotFoundException("Perfil inexistente");
 		}
 		try {
 			repository.deleteById(profileId);
@@ -95,9 +102,9 @@ public class ProfileService {
 	}
 	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(UUID deviceToken) {
-		Profile entity = repository.findByDevice_DeviceToken(deviceToken).
-				orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+	public void deleteWithDeviceId(UUID deviceId) {
+		Profile entity = repository.findByDevice_DeviceId(deviceId).
+				orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
 		try {
 			repository.delete(entity);
 		}
@@ -106,14 +113,33 @@ public class ProfileService {
 		}
 	}
 	
+	@Transactional
+	public void deleteByDevice(Device device) {
+		repository.findByDevice_DeviceId(device.getDeviceId()).
+				orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
+		try {
+			repository.deleteByDeviceId(device.getDeviceId());
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Falha de integridade referencial");
+		}
+	}
+	
+	
+	
 	private void copyDtoToEntity(ProfileDTO dto, Profile entity) {
 		entity.setEmail(dto.getEmail());
-		Device device = deviceRepository.findById(dto.getDeviceToken())
-		        .orElseThrow(() -> new ResourceNotFoundException("Dispositivo não encontrado"));
-		entity.setDevice(device);
+		entity.setDevice(entity.getDevice());
+		if(dto.getPreferenceId() != null) {
 		Preference preference = preferenceRepository.findById(dto.getPreferenceId())
 		        .orElseThrow(() -> new ResourceNotFoundException("Preferência não encontrada"));
 		entity.setPreference(preference);
+		}
+	}
+	
+	public Profile getProfileFromDevice(Device device) {
+		return repository.findByDevice_DeviceId(device.getDeviceId())
+				.orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
 	}
 
 }

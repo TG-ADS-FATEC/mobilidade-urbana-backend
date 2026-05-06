@@ -2,6 +2,7 @@ package com.sptrans.mobilidade_urbana.controllers.handlers;
 
 import java.time.Instant;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -38,6 +39,13 @@ public class ControllerExceptionHandler {
 		for(FieldError f: e.getBindingResult().getFieldErrors()) {
 			err.addError(f.getField(), f.getDefaultMessage());
 		}
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<CustomError> data(DataIntegrityViolationException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.CONFLICT;
+		CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 }
