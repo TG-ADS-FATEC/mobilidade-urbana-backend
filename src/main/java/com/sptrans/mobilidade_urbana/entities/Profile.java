@@ -1,6 +1,8 @@
 package com.sptrans.mobilidade_urbana.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -10,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -35,9 +38,10 @@ public class Profile {
 	@JoinColumn(name="preference_id", nullable=true, unique=true)
 	private Preference preference;
 	
-	public Profile() {}
-
+	@OneToMany(mappedBy="profile")
+	private List<Favorite> favorites = new ArrayList<>();
 	
+	public Profile() {}
 
 	public Profile(UUID profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Device device,
 			Preference preference) {
@@ -128,12 +132,16 @@ public class Profile {
 	public Preference getPreference() {
 		return preference;
 	}
-
-
-
+	
+	
 	public void setPreference(Preference preference) {
 		this.preference = preference;
 	}
 	
+	
+	public List<Favorite> getFavorites() {
+		return favorites;
+	}
 
+	
 }
