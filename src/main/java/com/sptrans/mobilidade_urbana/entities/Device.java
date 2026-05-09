@@ -3,7 +3,6 @@ package com.sptrans.mobilidade_urbana.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -105,7 +104,13 @@ public class Device {
 		this.createdAt = createdAt;
 	}
 
-	
+	public Profile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(Profile profile) {
+		this.profile = profile;
+	}
 		
 
 }

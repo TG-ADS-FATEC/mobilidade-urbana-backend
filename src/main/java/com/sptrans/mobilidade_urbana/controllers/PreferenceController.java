@@ -18,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.sptrans.mobilidade_urbana.dto.PreferenceDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
-import com.sptrans.mobilidade_urbana.entities.Preference;
 import com.sptrans.mobilidade_urbana.services.PreferenceService;
 
 import jakarta.validation.Valid;
