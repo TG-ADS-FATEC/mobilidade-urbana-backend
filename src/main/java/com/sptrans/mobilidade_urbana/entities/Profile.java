@@ -41,6 +41,12 @@ public class Profile {
 	@OneToMany(mappedBy="profile")
 	private List<Favorite> favorites = new ArrayList<>();
 	
+	@OneToMany(mappedBy="profile")
+	private List<Alert> alerts = new ArrayList<>();
+	
+	@OneToMany(mappedBy="profile")
+	private List<Notification> notifications = new ArrayList<>();
+	
 	public Profile() {}
 
 	public Profile(UUID profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Device device,
@@ -141,6 +147,15 @@ public class Profile {
 	
 	public List<Favorite> getFavorites() {
 		return favorites;
+	}
+	
+	
+	public List<Alert> getAlerts(){
+		return alerts;
+	}
+	
+	public List<Notification> getNotifications(){
+		return notifications;
 	}
 
 	

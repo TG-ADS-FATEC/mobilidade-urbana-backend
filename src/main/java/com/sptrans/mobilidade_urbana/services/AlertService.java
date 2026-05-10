@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sptrans.mobilidade_urbana.dto.FavoriteDTO;
+import com.sptrans.mobilidade_urbana.dto.AlertDTO;
+import com.sptrans.mobilidade_urbana.entities.Alert;
 import com.sptrans.mobilidade_urbana.entities.Device;
-import com.sptrans.mobilidade_urbana.entities.Favorite;
 import com.sptrans.mobilidade_urbana.entities.Profile;
-import com.sptrans.mobilidade_urbana.repositories.FavoriteRepository;
+import com.sptrans.mobilidade_urbana.repositories.AlertRepository;
 import com.sptrans.mobilidade_urbana.repositories.ProfileRepository;
 import com.sptrans.mobilidade_urbana.services.exceptions.DatabaseException;
 import com.sptrans.mobilidade_urbana.services.exceptions.ResourceNotFoundException;
@@ -20,79 +20,79 @@ import com.sptrans.mobilidade_urbana.services.exceptions.ResourceNotFoundExcepti
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class FavoriteService {
+public class AlertService {
 	
 	@Autowired
-	private FavoriteRepository repository;
+	private AlertRepository repository;
 	
 	@Autowired
 	private ProfileRepository profileRepository;
 	
 	@Transactional(readOnly = true)
-	public FavoriteDTO findById(Long favoriteId) {
-		Favorite favorite = repository.findById(favoriteId).orElseThrow(
-				() -> new ResourceNotFoundException("Favorito não encontrado"));
-		return new FavoriteDTO(favorite);
+	public AlertDTO findById(Long alertId) {
+		Alert alert = repository.findById(alertId).orElseThrow(
+				() -> new ResourceNotFoundException("Alerta não encontrado"));
+		return new AlertDTO(alert);
 	}
 	
 	@Transactional(readOnly=true)
-	public List<FavoriteDTO> findByDevice(Device device){
+	public List<AlertDTO> findByDevice(Device device){
 		
 		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
 		
-		List<Favorite> favorites = repository.findByProfile(profile);
+		List<Alert> alerts = repository.findByProfile(profile);
 		
-		return favorites.stream().map(FavoriteDTO::new).toList();
+		return alerts.stream().map(AlertDTO::new).toList();
 	}
 	
 	@Transactional
-	public FavoriteDTO insert(Device device, FavoriteDTO dto) {
+	public AlertDTO insert(Device device, AlertDTO dto) {
 		
 		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
 		
-		Favorite entity = new Favorite();
+		Alert entity = new Alert();
 		copyDtoToEntity(dto, entity);
 		
 		entity.setProfile(profile);
 		
-		profile.getFavorites().add(entity);
+		profile.getAlerts().add(entity);
 		
 		entity = repository.save(entity);
 		
-		return new FavoriteDTO(entity);
+		return new AlertDTO(entity);
 	}
 	
 	@Transactional
-	public FavoriteDTO update(Device device, Long favoriteId, FavoriteDTO dto) {
+	public AlertDTO update(Device device, Long alertId, AlertDTO dto) {
 		try {
 			Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 					.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
-			Favorite entity = repository.findById(favoriteId)
-					.orElseThrow(() -> new ResourceNotFoundException("Favorito não encontrado"));
+			Alert entity = repository.findById(alertId)
+					.orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado"));
 			
 			if(!entity.getProfile().getProfileId().equals(profile.getProfileId())) {
-				throw new ResourceNotFoundException("Favorito não pertence ao perfil");
+				throw new ResourceNotFoundException("Alerta não pertence ao perfil");
 			}
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
-			return new FavoriteDTO(entity);
+			return new AlertDTO(entity);
 		}
 		catch(EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Favorito não encontrado");
+			throw new ResourceNotFoundException("Alerta não encontrado");
 		}
 	}
 	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(Device device, Long favoriteId) {
+	public void delete(Device device, Long alertId) {
 		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
-		Favorite entity = repository.findById(favoriteId)
-				.orElseThrow(() -> new ResourceNotFoundException("Favorito não encontrado"));
+		Alert entity = repository.findById(alertId)
+				.orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado"));
 		
 		if(!entity.getProfile().getProfileId().equals(profile.getProfileId())) {
-			throw new ResourceNotFoundException("Favorito não pertence ao perfil");
+			throw new ResourceNotFoundException("Alerta não pertence ao perfil");
 		}
 		try {
 			repository.delete(entity);
@@ -103,9 +103,9 @@ public class FavoriteService {
 		
 	}
 	
-	private void copyDtoToEntity(FavoriteDTO dto, Favorite entity) {
-		entity.setFavoriteName(dto.getFavoriteName());
+	private void copyDtoToEntity(AlertDTO dto, Alert entity) {
+		entity.setMinutesBefore(dto.getMinutesBefore());
+		entity.setActive(dto.getActive());
 	}
-	
 
 }
