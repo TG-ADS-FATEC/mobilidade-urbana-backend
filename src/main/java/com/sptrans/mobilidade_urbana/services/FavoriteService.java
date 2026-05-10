@@ -65,11 +65,11 @@ public class FavoriteService {
 	}
 	
 	@Transactional
-	public FavoriteDTO update(Device device, FavoriteDTO dto) {
+	public FavoriteDTO update(Device device, Long favoriteId, FavoriteDTO dto) {
 		try {
 			Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 					.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
-			Favorite entity = repository.findById(dto.getFavoriteId())
+			Favorite entity = repository.findById(favoriteId)
 					.orElseThrow(() -> new ResourceNotFoundException("Favorito não encontrado"));
 			
 			if(!entity.getProfile().getProfileId().equals(profile.getProfileId())) {

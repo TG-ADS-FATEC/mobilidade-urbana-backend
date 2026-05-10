@@ -65,11 +65,11 @@ public class AlertService {
 	}
 	
 	@Transactional
-	public AlertDTO update(Device device, AlertDTO dto) {
+	public AlertDTO update(Device device, Long alertId, AlertDTO dto) {
 		try {
 			Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 					.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
-			Alert entity = repository.findById(dto.getAlertId())
+			Alert entity = repository.findById(alertId)
 					.orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado"));
 			
 			if(!entity.getProfile().getProfileId().equals(profile.getProfileId())) {

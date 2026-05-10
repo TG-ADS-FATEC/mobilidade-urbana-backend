@@ -30,7 +30,7 @@ public class AlertController {
 	private AlertService service;
 	
 	@GetMapping(value = "/me")
-	public ResponseEntity<List<AlertDTO>> findMyFavorite(@AuthenticationPrincipal Device device){
+	public ResponseEntity<List<AlertDTO>> findMyAlerts(@AuthenticationPrincipal Device device){
 		List<AlertDTO> dto = service.findByDevice(device);
 		return ResponseEntity.ok(dto);
 	}
@@ -44,8 +44,8 @@ public class AlertController {
 	}
 	
 	@PutMapping(value = "/{alertId}")
-	public ResponseEntity<AlertDTO> update(@AuthenticationPrincipal Device device, @Valid @RequestBody AlertDTO dto) {
-		AlertDTO updated = service.update(device, dto);
+	public ResponseEntity<AlertDTO> update(@AuthenticationPrincipal Device device,@PathVariable Long alertId, @Valid @RequestBody AlertDTO dto) {
+		AlertDTO updated = service.update(device, alertId, dto);
 		return ResponseEntity.ok(updated);
 	}
 	

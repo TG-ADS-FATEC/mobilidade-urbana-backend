@@ -44,8 +44,8 @@ public class FavoriteController {
 	}
 	
 	@PutMapping(value = "/{favoriteId}")
-	public ResponseEntity<FavoriteDTO> update(@AuthenticationPrincipal Device device, @Valid @RequestBody FavoriteDTO dto) {
-		FavoriteDTO updated = service.update(device, dto);
+	public ResponseEntity<FavoriteDTO> update(@AuthenticationPrincipal Device device,@PathVariable Long favoriteId, @Valid @RequestBody FavoriteDTO dto) {
+		FavoriteDTO updated = service.update(device, favoriteId, dto);
 		return ResponseEntity.ok(updated);
 	}
 	
