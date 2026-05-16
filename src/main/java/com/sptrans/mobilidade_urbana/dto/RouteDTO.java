@@ -1,6 +1,5 @@
 package com.sptrans.mobilidade_urbana.dto;
 
-import com.sptrans.mobilidade_urbana.entities.Route;
 import com.sptrans.mobilidade_urbana.entities.RouteType;
 
 public class RouteDTO {
@@ -26,45 +25,62 @@ public class RouteDTO {
 		this.routeTextColor = routeTextColor;
 		this.agencyId = agencyId;
 	}
-	
-	public RouteDTO(Route entity) {
-		routeId = entity.getRouteId();
-		routeShortName = entity.getRouteShortName();
-		routeLongName = entity.getRouteLongName();
-		routeType = entity.getRouteType();
-		routeColor = entity.getRouteColor();
-		routeTextColor = entity.getRouteTextColor();
-		agencyId = entity.getAgency().getAgencyId();
-	}
 
 	public String getRouteId() {
 		return routeId;
+	}
+
+	public void setRouteId(String routeId) {
+		this.routeId = routeId;
 	}
 
 	public String getRouteShortName() {
 		return routeShortName;
 	}
 
+	public void setRouteShortName(String routeShortName) {
+		this.routeShortName = routeShortName;
+	}
+
 	public String getRouteLongName() {
 		return routeLongName;
+	}
+
+	public void setRouteLongName(String routeLongName) {
+		this.routeLongName = routeLongName;
 	}
 
 	public RouteType getRouteType() {
 		return routeType;
 	}
 
+	public void setRouteType(RouteType routeType) {
+		this.routeType = routeType;
+	}
+
 	public String getRouteColor() {
 		return routeColor;
+	}
+
+	public void setRouteColor(String routeColor) {
+		this.routeColor = routeColor;
 	}
 
 	public String getRouteTextColor() {
 		return routeTextColor;
 	}
 
+	public void setRouteTextColor(String routeTextColor) {
+		this.routeTextColor = routeTextColor;
+	}
+
 	public String getAgencyId() {
 		return agencyId;
 	}
-	
+
+	public void setAgencyId(String agencyId) {
+		this.agencyId = agencyId;
+	}
 	
 
 }
