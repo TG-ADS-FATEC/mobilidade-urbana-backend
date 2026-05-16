@@ -4,8 +4,6 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import com.sptrans.mobilidade_urbana.entities.Agency;
-
 public class AgencyDTO {
 	
 	private String agencyId;
@@ -24,33 +22,45 @@ public class AgencyDTO {
 		this.agencyTimezone = agencyTimezone;
 		this.agencyLang = agencyLang;
 	}
-	
-	public AgencyDTO(Agency entity) {
-		agencyId = entity.getAgencyId();
-		agencyName = entity.getAgencyName();
-		agencyUrl = entity.getAgencyUrl();
-		agencyTimezone = entity.getAgencyTimezone();
-		agencyLang = entity.getAgencyLang();
-	}
 
 	public String getAgencyId() {
 		return agencyId;
+	}
+
+	public void setAgencyId(String agencyId) {
+		this.agencyId = agencyId;
 	}
 
 	public String getAgencyName() {
 		return agencyName;
 	}
 
+	public void setAgencyName(String agencyName) {
+		this.agencyName = agencyName;
+	}
+
 	public URL getAgencyUrl() {
 		return agencyUrl;
+	}
+
+	public void setAgencyUrl(URL agencyUrl) {
+		this.agencyUrl = agencyUrl;
 	}
 
 	public TimeZone getAgencyTimezone() {
 		return agencyTimezone;
 	}
 
+	public void setAgencyTimezone(TimeZone agencyTimezone) {
+		this.agencyTimezone = agencyTimezone;
+	}
+
 	public Locale getAgencyLang() {
 		return agencyLang;
+	}
+
+	public void setAgencyLang(Locale agencyLang) {
+		this.agencyLang = agencyLang;
 	}
 	
 
