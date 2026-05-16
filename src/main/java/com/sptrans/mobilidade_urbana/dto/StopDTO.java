@@ -1,7 +1,5 @@
 package com.sptrans.mobilidade_urbana.dto;
 
-import com.sptrans.mobilidade_urbana.entities.Stop;
-
 public class StopDTO {
 	
 	private String stopId;
@@ -20,31 +18,45 @@ public class StopDTO {
 		this.stopLatitude = stopLatitude;
 		this.stopLongitude = stopLongitude;
 	}
-	
-	public StopDTO(Stop entity) {
-		stopId = entity.getStopId();
-		stopName = entity.getStopName();
-		stopDescription = entity.getStopDescription();
-		stopLatitude = entity.getStopLatitude();
-		stopLongitude = entity.getStopLongitude();
-	}
-	
+
 	public String getStopId() {
 		return stopId;
 	}
+
+	public void setStopId(String stopId) {
+		this.stopId = stopId;
+	}
+
 	public String getStopName() {
 		return stopName;
 	}
+
+	public void setStopName(String stopName) {
+		this.stopName = stopName;
+	}
+
 	public String getStopDescription() {
 		return stopDescription;
 	}
+
+	public void setStopDescription(String stopDescription) {
+		this.stopDescription = stopDescription;
+	}
+
 	public Double getStopLatitude() {
 		return stopLatitude;
 	}
+
+	public void setStopLatitude(Double stopLatitude) {
+		this.stopLatitude = stopLatitude;
+	}
+
 	public Double getStopLongitude() {
 		return stopLongitude;
 	}
-	
-	
+
+	public void setStopLongitude(Double stopLongitude) {
+		this.stopLongitude = stopLongitude;
+	}
 
 }
