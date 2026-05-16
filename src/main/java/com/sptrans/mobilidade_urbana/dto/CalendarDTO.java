@@ -2,8 +2,6 @@ package com.sptrans.mobilidade_urbana.dto;
 
 import java.util.Date;
 
-import com.sptrans.mobilidade_urbana.entities.Calendar;
-
 public class CalendarDTO {
 	
 	private String serviceId;
@@ -33,60 +31,85 @@ public class CalendarDTO {
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
-	
-	public CalendarDTO(Calendar entity) {
-		serviceId = entity.getServiceId();
-		monday = entity.getMonday();
-		tuesday = entity.getTuesday();
-		wednesday = entity.getWednesday();
-		thursday = entity.getThursday();
-		friday = entity.getFriday();
-		saturday = entity.getSaturday();
-		sunday = entity.getSunday();
-		startDate = entity.getStartDate();
-		endDate = entity.getEndDate();
-	}
 
 	public String getServiceId() {
 		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
 	}
 
 	public Boolean getMonday() {
 		return monday;
 	}
 
+	public void setMonday(Boolean monday) {
+		this.monday = monday;
+	}
+
 	public Boolean getTuesday() {
 		return tuesday;
+	}
+
+	public void setTuesday(Boolean tuesday) {
+		this.tuesday = tuesday;
 	}
 
 	public Boolean getWednesday() {
 		return wednesday;
 	}
 
+	public void setWednesday(Boolean wednesday) {
+		this.wednesday = wednesday;
+	}
+
 	public Boolean getThursday() {
 		return thursday;
+	}
+
+	public void setThursday(Boolean thursday) {
+		this.thursday = thursday;
 	}
 
 	public Boolean getFriday() {
 		return friday;
 	}
 
+	public void setFriday(Boolean friday) {
+		this.friday = friday;
+	}
+
 	public Boolean getSaturday() {
 		return saturday;
+	}
+
+	public void setSaturday(Boolean saturday) {
+		this.saturday = saturday;
 	}
 
 	public Boolean getSunday() {
 		return sunday;
 	}
 
+	public void setSunday(Boolean sunday) {
+		this.sunday = sunday;
+	}
+
 	public Date getStartDate() {
 		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 	public Date getEndDate() {
 		return endDate;
 	}
-	
-	
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
 
 }
