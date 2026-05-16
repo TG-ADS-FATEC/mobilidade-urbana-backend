@@ -1,0 +1,64 @@
+package com.sptrans.mobilidade_urbana.dto;
+
+public class StopTimeDTO {
+	
+	private String tripId;
+	private String arrivalTime;
+	private String departureTime;
+	private String stopId;
+	private Integer stopSequence;
+	
+	public StopTimeDTO() {}
+
+	public StopTimeDTO(String tripId, String arrivalTime, String departureTime, String stopId, Integer stopSequence) {
+		super();
+		this.tripId = tripId;
+		this.arrivalTime = arrivalTime;
+		this.departureTime = departureTime;
+		this.stopId = stopId;
+		this.stopSequence = stopSequence;
+	}
+
+	public String getTripId() {
+		return tripId;
+	}
+
+	public void setTripId(String tripId) {
+		this.tripId = tripId;
+	}
+
+	public String getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(String arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public String getDepartureTime() {
+		return departureTime;
+	}
+
+	public void setDepartureTime(String departureTime) {
+		this.departureTime = departureTime;
+	}
+
+	public String getStopId() {
+		return stopId;
+	}
+
+	public void setStopId(String stopId) {
+		this.stopId = stopId;
+	}
+
+	public Integer getStopSequence() {
+		return stopSequence;
+	}
+
+	public void setStopSequence(Integer stopSequence) {
+		this.stopSequence = stopSequence;
+	}
+	
+	
+
+}

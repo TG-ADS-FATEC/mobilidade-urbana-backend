@@ -3,11 +3,13 @@ package com.sptrans.mobilidade_urbana.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 @Entity
@@ -33,6 +35,10 @@ public class Trip {
 	
 	@OneToMany(mappedBy="trip")
 	List<Frequency> frequencies = new ArrayList<>();
+	
+	@OneToMany(mappedBy="trip", cascade=CascadeType.ALL)
+	@OrderBy("id.stopSequence ASC")
+	private List<StopTime> stopTimes = new ArrayList<>();
 	
 	public Trip() {}
 

@@ -1,7 +1,12 @@
 package com.sptrans.mobilidade_urbana.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 
 @Entity
 public class Stop {
@@ -12,6 +17,11 @@ public class Stop {
 	private String stopDescription;
 	private Double stopLatitude;
 	private Double stopLongitude;
+	
+	@OneToMany(mappedBy="stop")
+	@OrderBy("arrivalTime.secondsFromMidnight ASC")
+	private List<StopTime> stopTimes = new ArrayList<>();
+	
 	
 	public Stop() {}
 
@@ -62,6 +72,10 @@ public class Stop {
 
 	public void setStopLongitude(Double stopLongitude) {
 		this.stopLongitude = stopLongitude;
+	}
+
+	public List<StopTime> getStopTimes() {
+		return stopTimes;
 	}
 	
 	
