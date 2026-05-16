@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sptrans.mobilidade_urbana.entities.Shape;
 
-public interface ShapeRepository extends JpaRepository<Shape, Long> {
+public interface ShapeRepository extends JpaRepository<Shape, String> {
 
 }

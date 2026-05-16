@@ -1,11 +1,14 @@
 package com.sptrans.mobilidade_urbana.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Route {
@@ -22,6 +25,9 @@ public class Route {
 	@ManyToOne
 	@JoinColumn(name="agency_id")
 	private Agency agency;
+	
+	@OneToMany(mappedBy="route")
+	private List<Trip> trips;
 	
 	public Route() {}
 
@@ -92,7 +98,10 @@ public class Route {
 	public void setAgency(Agency agency) {
 		this.agency = agency;
 	}
-	
+
+	public List<Trip> getTrips() {
+		return trips;
+	}
 	
 
 }

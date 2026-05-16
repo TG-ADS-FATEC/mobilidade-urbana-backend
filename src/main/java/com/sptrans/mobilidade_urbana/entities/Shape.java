@@ -7,6 +7,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,16 +15,19 @@ import jakarta.persistence.Table;
 public class Shape {
 	
 	@Id
-	private Long shapeId;
+	private String shapeId;
 	
 	@OneToMany(mappedBy="shape", cascade=CascadeType.ALL, orphanRemoval=true)
+	@OrderBy("id.sequence ASC")
 	private List<ShapePoint> points = new ArrayList<>();
+	
+	@OneToMany(mappedBy="shape")
+	private List<Trip> trips = new ArrayList<>();
 	
 	public Shape() {}
 	
 	
-	
-	public Shape(Long shapeId, List<ShapePoint> points) {
+	public Shape(String shapeId, List<ShapePoint> points) {
 		super();
 		this.shapeId = shapeId;
 		this.points = points;
@@ -43,13 +47,13 @@ public class Shape {
 
 
 
-	public Long getShapeId() {
+	public String getShapeId() {
 		return shapeId;
 	}
 
 
 
-	public void setShapeId(Long shapeId) {
+	public void setShapeId(String shapeId) {
 		this.shapeId = shapeId;
 	}
 
@@ -63,6 +67,11 @@ public class Shape {
 
 	public void setPoints(List<ShapePoint> points) {
 		this.points = points;
+	}
+
+
+	public List<Trip> getTrips() {
+		return trips;
 	}
 	
 	

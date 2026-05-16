@@ -10,23 +10,23 @@ public class ShapePointId implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Long shapeId;
+	private String shapeId;
 	
 	private Integer sequence;
 	
 	public ShapePointId() {}
 
-	public ShapePointId(Long shapeId, Integer sequence) {
+	public ShapePointId(String shapeId, Integer sequence) {
 		super();
 		this.shapeId = shapeId;
 		this.sequence = sequence;
 	}
 
-	public Long getShapeId() {
+	public String getShapeId() {
 		return shapeId;
 	}
 
-	public void setShapeId(Long shapeId) {
+	public void setShapeId(String shapeId) {
 		this.shapeId = shapeId;
 	}
 

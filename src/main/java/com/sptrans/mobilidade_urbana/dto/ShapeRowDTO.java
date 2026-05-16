@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record ShapeRowDTO(
 		
 		@JsonProperty("shape_id")
-		Long shapeId,
+		String shapeId,
 		
 		@JsonProperty("shape_pt_lat")
 		Double latitude,

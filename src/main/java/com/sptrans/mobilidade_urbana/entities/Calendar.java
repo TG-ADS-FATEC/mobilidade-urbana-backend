@@ -1,9 +1,11 @@
 package com.sptrans.mobilidade_urbana.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Calendar {
@@ -19,6 +21,9 @@ public class Calendar {
 	private Boolean sunday;
 	private Date startDate;
 	private Date endDate;
+	
+	@OneToMany(mappedBy="calendar")
+	private List<Trip> trips;
 	
 	public Calendar() {}
 
@@ -115,6 +120,10 @@ public class Calendar {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public List<Trip> getTrips() {
+		return trips;
 	}
 	
 	
