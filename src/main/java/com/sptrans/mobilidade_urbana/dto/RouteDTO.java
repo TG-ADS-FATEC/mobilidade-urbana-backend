@@ -11,12 +11,12 @@ public class RouteDTO {
 	private RouteType routeType;
 	private String routeColor;
 	private String routeTextColor;
-	private Long agencyId;
+	private String agencyId;
 	
 	public RouteDTO() {}
 
 	public RouteDTO(String routeId, String routeShortName, String routeLongName, RouteType routeType, String routeColor,
-			String routeTextColor, Long agencyId) {
+			String routeTextColor, String agencyId) {
 		super();
 		this.routeId = routeId;
 		this.routeShortName = routeShortName;
@@ -61,7 +61,7 @@ public class RouteDTO {
 		return routeTextColor;
 	}
 
-	public Long getAgencyId() {
+	public String getAgencyId() {
 		return agencyId;
 	}
 	

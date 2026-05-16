@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 public class Agency {
 	
 	@Id
-	private Long agencyId;
+	private String agencyId;
 	private String agencyName;
 	private URL agencyUrl;
 	private TimeZone agencyTimezone;
@@ -19,7 +19,7 @@ public class Agency {
 	
 	public Agency() {}
 
-	public Agency(Long agencyId, String agencyName, URL agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
+	public Agency(String agencyId, String agencyName, URL agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
 		super();
 		this.agencyId = agencyId;
 		this.agencyName = agencyName;
@@ -28,11 +28,11 @@ public class Agency {
 		this.agencyLang = agencyLang;
 	}
 
-	public Long getAgencyId() {
+	public String getAgencyId() {
 		return agencyId;
 	}
 
-	public void setAgencyId(Long agencyId) {
+	public void setAgencyId(String agencyId) {
 		this.agencyId = agencyId;
 	}
 

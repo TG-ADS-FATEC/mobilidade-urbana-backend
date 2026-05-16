@@ -8,7 +8,7 @@ import com.sptrans.mobilidade_urbana.entities.Agency;
 
 public class AgencyDTO {
 	
-	private Long agencyId;
+	private String agencyId;
 	private String agencyName;
 	private URL agencyUrl;
 	private TimeZone agencyTimezone;
@@ -16,7 +16,7 @@ public class AgencyDTO {
 	
 	public AgencyDTO() {}
 
-	public AgencyDTO(Long agencyId, String agencyName, URL agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
+	public AgencyDTO(String agencyId, String agencyName, URL agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
 		super();
 		this.agencyId = agencyId;
 		this.agencyName = agencyName;
@@ -33,7 +33,7 @@ public class AgencyDTO {
 		agencyLang = entity.getAgencyLang();
 	}
 
-	public Long getAgencyId() {
+	public String getAgencyId() {
 		return agencyId;
 	}
 
