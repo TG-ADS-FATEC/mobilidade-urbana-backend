@@ -4,7 +4,7 @@ import com.sptrans.mobilidade_urbana.entities.Stop;
 
 public class StopDTO {
 	
-	private Long stopId;
+	private String stopId;
 	private String stopName;
 	private String stopDescription;
 	private Double stopLatitude;
@@ -12,7 +12,7 @@ public class StopDTO {
 	
 	public StopDTO() {}
 	
-	public StopDTO(Long stopId, String stopName, String stopDescription, Double stopLatitude, Double stopLongitude) {
+	public StopDTO(String stopId, String stopName, String stopDescription, Double stopLatitude, Double stopLongitude) {
 		super();
 		this.stopId = stopId;
 		this.stopName = stopName;
@@ -29,7 +29,7 @@ public class StopDTO {
 		stopLongitude = entity.getStopLongitude();
 	}
 	
-	public Long getStopId() {
+	public String getStopId() {
 		return stopId;
 	}
 	public String getStopName() {

@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 public class Stop {
 	
 	@Id
-	private Long stopId;
+	private String stopId;
 	private String stopName;
 	private String stopDescription;
 	private Double stopLatitude;
@@ -15,7 +15,7 @@ public class Stop {
 	
 	public Stop() {}
 
-	public Stop(Long stopId, String stopName, String stopDescription, Double stopLatitude, Double stopLongitude) {
+	public Stop(String stopId, String stopName, String stopDescription, Double stopLatitude, Double stopLongitude) {
 		super();
 		this.stopId = stopId;
 		this.stopName = stopName;
@@ -24,11 +24,11 @@ public class Stop {
 		this.stopLongitude = stopLongitude;
 	}
 
-	public Long getStopId() {
+	public String getStopId() {
 		return stopId;
 	}
 
-	public void setStopId(Long stopId) {
+	public void setStopId(String stopId) {
 		this.stopId = stopId;
 	}
 
