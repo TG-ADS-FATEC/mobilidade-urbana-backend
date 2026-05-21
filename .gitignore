@@ -16,6 +16,7 @@ target/
 .env.prod
 .env.dev
 .metadata
+.data
 
 ### IntelliJ IDEA ###
 .idea
