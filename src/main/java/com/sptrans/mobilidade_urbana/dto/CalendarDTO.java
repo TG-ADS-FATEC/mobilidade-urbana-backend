@@ -1,6 +1,6 @@
 package com.sptrans.mobilidade_urbana.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class CalendarDTO {
 	
@@ -12,13 +12,13 @@ public class CalendarDTO {
 	private Boolean friday;
 	private Boolean saturday;
 	private Boolean sunday;
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	
 	public CalendarDTO() {}
 
 	public CalendarDTO(String serviceId, Boolean monday, Boolean tuesday, Boolean wednesday, Boolean thursday,
-			Boolean friday, Boolean saturday, Boolean sunday, Date startDate, Date endDate) {
+			Boolean friday, Boolean saturday, Boolean sunday, LocalDate startDate, LocalDate endDate) {
 		super();
 		this.serviceId = serviceId;
 		this.monday = monday;
@@ -96,19 +96,19 @@ public class CalendarDTO {
 		this.sunday = sunday;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

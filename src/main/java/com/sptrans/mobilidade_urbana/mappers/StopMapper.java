@@ -2,23 +2,23 @@ package com.sptrans.mobilidade_urbana.mappers;
 
 import org.springframework.stereotype.Component;
 
-import com.sptrans.mobilidade_urbana.dto.StopDTO;
+import com.sptrans.mobilidade_urbana.dto.StopRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Stop;
 
 @Component
 public class StopMapper {
 	
-	public Stop toEntity(StopDTO dto) {
-		if(dto==null) {
+	public Stop toEntity(StopRawDTO rawDto) {
+		if(rawDto==null) {
 			return null;
 		}
 		
 		Stop stop = new Stop();
-		stop.setStopId(dto.getStopId());
-		stop.setStopName(dto.getStopName());
-		stop.setStopDescription(dto.getStopDescription());
-		stop.setStopLatitude(dto.getStopLatitude());
-		stop.setStopLongitude(dto.getStopLongitude());
+		stop.setStopId(rawDto.getStopId());
+		stop.setStopName(rawDto.getStopName());
+		stop.setStopDescription(rawDto.getStopDescription());
+		stop.setStopLatitude(Double.parseDouble(rawDto.getStopLatitude()));
+		stop.setStopLongitude(Double.parseDouble(rawDto.getStopLongitude()));
 		
 		return stop;
 	}

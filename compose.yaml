@@ -13,6 +13,9 @@ services:
         ports:
             - "8080:8080"
 
+        volumes:
+          - ./data/sptrans_gtfs.zip:/data/sptrans_gtfs.zip
+
     postgres:
         image: "postgres:15"
         environment:

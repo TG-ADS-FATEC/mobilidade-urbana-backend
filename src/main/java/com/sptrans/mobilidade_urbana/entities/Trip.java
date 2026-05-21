@@ -22,15 +22,15 @@ public class Trip {
 	private DirectionId directionId;
 	
 	@ManyToOne
-	@JoinColumn(name="route_id", nullable=false, unique=true)
+	@JoinColumn(name="route_id", nullable=false)
 	private Route route;
 	
 	@ManyToOne
-	@JoinColumn(name="service_id", nullable=false, unique=true)
+	@JoinColumn(name="service_id", nullable=false)
 	private Calendar calendar;
 	
 	@ManyToOne
-	@JoinColumn(name="shape_id", nullable=false, unique=true)
+	@JoinColumn(name="shape_id", nullable=false)
 	private Shape shape;
 	
 	@OneToMany(mappedBy="trip")

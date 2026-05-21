@@ -2,8 +2,9 @@ package com.sptrans.mobilidade_urbana.mappers;
 
 import org.springframework.stereotype.Component;
 
-import com.sptrans.mobilidade_urbana.dto.TripDTO;
+import com.sptrans.mobilidade_urbana.dto.TripRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Calendar;
+import com.sptrans.mobilidade_urbana.entities.DirectionId;
 import com.sptrans.mobilidade_urbana.entities.Route;
 import com.sptrans.mobilidade_urbana.entities.Shape;
 import com.sptrans.mobilidade_urbana.entities.Trip;
@@ -26,21 +27,25 @@ public class TripMapper {
 		this.shapeRepository = shapeRepository;
 	}
 	
-	public Trip toEntity(TripDTO dto) {
+	public Trip toEntity(TripRawDTO rawDto) {
+		
+		if(rawDto==null) {
+			return null;
+		}
 		
 		Trip trip = new Trip();
 		
-		trip.setTripId(dto.getTripId());
-		trip.setTripHeadsign(dto.getTripHeadsign());
-		trip.setDirectionId(dto.getDirectionId());
+		trip.setTripId(rawDto.getTripId());
+		trip.setTripHeadsign(rawDto.getTripHeadsign());
+		trip.setDirectionId(DirectionId.from(Integer.parseInt(rawDto.getDirectionId())));
 		
-		Route route = routeRepository.getReferenceById(dto.getRouteId());
+		Route route = routeRepository.getReferenceById(rawDto.getRouteId());
 		trip.setRoute(route);
 		
-		Calendar calendar = calendarRepository.getReferenceById(dto.getServiceId());
+		Calendar calendar = calendarRepository.getReferenceById(rawDto.getServiceId());
 		trip.setCalendar(calendar);
 		
-		Shape shape = shapeRepository.getReferenceById(dto.getShapeId());
+		Shape shape = shapeRepository.getReferenceById(rawDto.getShapeId());
 		trip.setShape(shape);
 		
 		return trip;

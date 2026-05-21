@@ -1,27 +1,23 @@
-package com.sptrans.mobilidade_urbana.entities;
+package com.sptrans.mobilidade_urbana.dto;
 
-import java.util.Locale;
-import java.util.TimeZone;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.sptrans.mobilidade_urbana.gtfs.GTFSFile;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-@Entity
-@GTFSFile("agency.txt")
-public class Agency {
+public class AgencyRawDTO {
 	
-	@Id
+	@JsonProperty("agency_id")
 	private String agencyId;
+	@JsonProperty("agency_name")
 	private String agencyName;
+	@JsonProperty("agency_url")
 	private String agencyUrl;
-	private TimeZone agencyTimezone;
-	private Locale agencyLang;
+	@JsonProperty("agency_timezone")
+	private String agencyTimezone;
+	@JsonProperty("agency_lang")
+	private String agencyLang;
 	
-	public Agency() {}
+	public AgencyRawDTO() {}
 
-	public Agency(String agencyId, String agencyName, String agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
+	public AgencyRawDTO(String agencyId, String agencyName, String agencyUrl, String agencyTimezone, String agencyLang) {
 		super();
 		this.agencyId = agencyId;
 		this.agencyName = agencyName;
@@ -54,20 +50,20 @@ public class Agency {
 		this.agencyUrl = agencyUrl;
 	}
 
-	public TimeZone getAgencyTimezone() {
+	public String getAgencyTimezone() {
 		return agencyTimezone;
 	}
 
-	public void setAgencyTimezone(TimeZone agencyTimezone) {
+	public void setAgencyTimezone(String agencyTimezone) {
 		this.agencyTimezone = agencyTimezone;
 	}
 
-	public Locale getAgencyLang() {
+	public String getAgencyLang() {
 		return agencyLang;
 	}
 
-	public void setAgencyLang(Locale agencyLang) {
+	public void setAgencyLang(String agencyLang) {
 		this.agencyLang = agencyLang;
 	}
-	
+
 }

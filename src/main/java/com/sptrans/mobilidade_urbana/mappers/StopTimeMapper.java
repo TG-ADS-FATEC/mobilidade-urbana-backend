@@ -3,7 +3,7 @@ package com.sptrans.mobilidade_urbana.mappers;
 import org.springframework.stereotype.Component;
 
 import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
-import com.sptrans.mobilidade_urbana.dto.StopTimeDTO;
+import com.sptrans.mobilidade_urbana.dto.StopTimeRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Stop;
 import com.sptrans.mobilidade_urbana.entities.StopTime;
 import com.sptrans.mobilidade_urbana.entities.StopTimeId;
@@ -21,19 +21,23 @@ public class StopTimeMapper {
 		this.entityManager = entityManager;
 	}
 	
-	public StopTime toEntity(StopTimeDTO dto) {
+	public StopTime toEntity(StopTimeRawDTO rawDto) {
+		
+		if(rawDto==null) {
+			return null;
+		}
 		
 		StopTime stopTime = new StopTime();
 		
-		stopTime.setStopTimeId(new StopTimeId(dto.getTripId(), dto.getStopSequence()));
+		stopTime.setStopTimeId(new StopTimeId(rawDto.getTripId(), Integer.parseInt(rawDto.getStopSequence())));
 		
-		stopTime.setTrip(entityManager.getReference(Trip.class,dto.getTripId()));
+		stopTime.setTrip(entityManager.getReference(Trip.class,rawDto.getTripId()));
 		
-		stopTime.setStop(entityManager.getReference(Stop.class, dto.getStopId()));
+		stopTime.setStop(entityManager.getReference(Stop.class, rawDto.getStopId()));
 		
-		stopTime.setArrivalTime(GTFSTime.parse(dto.getArrivalTime()));
+		stopTime.setArrivalTime(GTFSTime.parse(rawDto.getArrivalTime()));
 		
-		stopTime.setDepartureTime(GTFSTime.parse(dto.getDepartureTime()));
+		stopTime.setDepartureTime(GTFSTime.parse(rawDto.getDepartureTime()));
 		
 		return stopTime;
 	}

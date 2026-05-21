@@ -5,7 +5,9 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class GTFSTime {
 	
-	private final int secondsFromMidnight;
+	private int secondsFromMidnight;
+	
+	protected GTFSTime() {}
 	
 	public GTFSTime(int secondsFromMidnight) {
 		this.secondsFromMidnight = secondsFromMidnight;

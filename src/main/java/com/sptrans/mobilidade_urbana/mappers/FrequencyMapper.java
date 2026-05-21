@@ -3,7 +3,7 @@ package com.sptrans.mobilidade_urbana.mappers;
 import org.springframework.stereotype.Component;
 
 import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
-import com.sptrans.mobilidade_urbana.dto.FrequencyDTO;
+import com.sptrans.mobilidade_urbana.dto.FrequencyRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Frequency;
 import com.sptrans.mobilidade_urbana.entities.Trip;
 
@@ -18,16 +18,16 @@ public class FrequencyMapper {
 		this.entityManager = entityManager;
 	}
 	
-	public Frequency toEntity(FrequencyDTO dto) {
+	public Frequency toEntity(FrequencyRawDTO rawDto) {
 		
 		Frequency frequency = new Frequency();
 		
-		Trip trip = entityManager.getReference(Trip.class, dto.getTripId());
+		Trip trip = entityManager.getReference(Trip.class, rawDto.getTripId());
 		frequency.setTrip(trip);
 		
-		frequency.setStartTime(GTFSTime.parse(dto.getStartTime()));
-		frequency.setEndTime(GTFSTime.parse(dto.getEndTime()));
-		frequency.setHeadwaySeconds(dto.getHeadwaySeconds());
+		frequency.setStartTime(GTFSTime.parse(rawDto.getStartTime()));
+		frequency.setEndTime(GTFSTime.parse(rawDto.getEndTime()));
+		frequency.setHeadwaySeconds(Integer.parseInt(rawDto.getHeadwaySeconds()));
 		
 		return frequency;
 	}

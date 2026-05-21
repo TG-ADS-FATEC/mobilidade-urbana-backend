@@ -1,6 +1,6 @@
 package com.sptrans.mobilidade_urbana.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -19,8 +19,8 @@ public class Calendar {
 	private Boolean friday;
 	private Boolean saturday;
 	private Boolean sunday;
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	
 	@OneToMany(mappedBy="calendar")
 	private List<Trip> trips;
@@ -28,7 +28,7 @@ public class Calendar {
 	public Calendar() {}
 
 	public Calendar(String serviceId, Boolean monday, Boolean tuesday, Boolean wednesday, Boolean thursday,
-			Boolean friday, Boolean saturday, Boolean sunday, Date startDate, Date endDate) {
+			Boolean friday, Boolean saturday, Boolean sunday, LocalDate startDate, LocalDate endDate) {
 		super();
 		this.serviceId = serviceId;
 		this.monday = monday;
@@ -106,19 +106,19 @@ public class Calendar {
 		this.sunday = sunday;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

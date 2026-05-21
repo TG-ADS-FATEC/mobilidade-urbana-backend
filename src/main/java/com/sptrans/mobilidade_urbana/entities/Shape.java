@@ -18,7 +18,7 @@ public class Shape {
 	private String shapeId;
 	
 	@OneToMany(mappedBy="shape", cascade=CascadeType.ALL, orphanRemoval=true)
-	@OrderBy("id.sequence ASC")
+	@OrderBy("shapePointId.sequence ASC")
 	private List<ShapePoint> points = new ArrayList<>();
 	
 	@OneToMany(mappedBy="shape")

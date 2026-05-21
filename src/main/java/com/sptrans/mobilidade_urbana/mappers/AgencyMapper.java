@@ -1,26 +1,32 @@
 package com.sptrans.mobilidade_urbana.mappers;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.springframework.stereotype.Component;
 
 import com.sptrans.mobilidade_urbana.dto.AgencyDTO;
+import com.sptrans.mobilidade_urbana.dto.AgencyRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Agency;
 
 @Component
 public class AgencyMapper {
 	
-	public Agency toEntity(AgencyDTO dto) {
+	public Agency toEntity(AgencyRawDTO rawDto) {
 		
-		if(dto==null) {
+		if(rawDto==null) {
 			return null;
 		}
 		
 		Agency agency = new Agency();
 		
-		agency.setAgencyId(dto.getAgencyId());
-		agency.setAgencyName(dto.getAgencyName());
-		agency.setAgencyUrl(dto.getAgencyUrl());
-		agency.setAgencyTimezone(dto.getAgencyTimezone());
-		agency.setAgencyLang(dto.getAgencyLang());
+		agency.setAgencyId(rawDto.getAgencyId());
+		agency.setAgencyName(rawDto.getAgencyName());
+		agency.setAgencyUrl(rawDto.getAgencyUrl());
+		agency.setAgencyTimezone(rawDto.getAgencyTimezone()!=null
+				? TimeZone.getTimeZone(rawDto.getAgencyTimezone()): null);
+		agency.setAgencyLang(rawDto.getAgencyLang()!=null
+				? Locale.forLanguageTag(rawDto.getAgencyLang()):null);
 		
 		return agency;
 	}

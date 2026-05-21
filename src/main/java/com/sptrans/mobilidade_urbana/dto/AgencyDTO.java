@@ -1,6 +1,5 @@
 package com.sptrans.mobilidade_urbana.dto;
 
-import java.net.URL;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -8,13 +7,13 @@ public class AgencyDTO {
 	
 	private String agencyId;
 	private String agencyName;
-	private URL agencyUrl;
+	private String agencyUrl;
 	private TimeZone agencyTimezone;
 	private Locale agencyLang;
 	
 	public AgencyDTO() {}
 
-	public AgencyDTO(String agencyId, String agencyName, URL agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
+	public AgencyDTO(String agencyId, String agencyName, String agencyUrl, TimeZone agencyTimezone, Locale agencyLang) {
 		super();
 		this.agencyId = agencyId;
 		this.agencyName = agencyName;
@@ -39,11 +38,11 @@ public class AgencyDTO {
 		this.agencyName = agencyName;
 	}
 
-	public URL getAgencyUrl() {
+	public String getAgencyUrl() {
 		return agencyUrl;
 	}
 
-	public void setAgencyUrl(URL agencyUrl) {
+	public void setAgencyUrl(String agencyUrl) {
 		this.agencyUrl = agencyUrl;
 	}
 
