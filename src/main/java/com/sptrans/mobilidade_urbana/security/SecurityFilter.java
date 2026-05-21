@@ -73,7 +73,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 	
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return request.getServletPath().startsWith("/authentication/devices");
+		String path = request.getServletPath();
+		
+		return path.startsWith("/authentication/devices") || path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs") || path.startsWith("swagger-ui.html");
 	}
 	
 	private String recoverToken(HttpServletRequest request) {

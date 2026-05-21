@@ -1,10 +1,12 @@
 package com.sptrans.mobilidade_urbana.security;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,17 +25,29 @@ public class SecurityConfiguration {
 	private SecurityFilter securityFilter;
 	
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    	return httpSecurity
-    			.csrf(csrf -> csrf.disable())
-    			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-    			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    			.authorizeHttpRequests(auth -> auth
-    					.requestMatchers(HttpMethod.POST, "/authentication/devices/register").permitAll()
-    					.requestMatchers(HttpMethod.POST, "/authentication/devices/refresh").permitAll()
-    					.anyRequest().authenticated())
-    			.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-    			.build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, Environment env) throws Exception {
+    	
+    	boolean isDev = Arrays.asList(env.getActiveProfiles()).contains("dev");
+    	
+    	httpSecurity
+    		.csrf(csrf -> csrf.disable())
+   			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+   			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+   	
+    	httpSecurity.authorizeHttpRequests(auth -> {
+    					auth.requestMatchers(HttpMethod.POST, "/authentication/devices/register").permitAll();
+    					auth.requestMatchers(HttpMethod.POST, "/authentication/devices/refresh").permitAll();
+    					
+    					if(isDev) {
+    						auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll();
+    					}
+    					
+    					auth.anyRequest().authenticated();
+    					});
+    	
+    	httpSecurity.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+    	
+    	return httpSecurity.build();
     }
     
     @Bean 
