@@ -27,7 +27,9 @@ public class Profile {
 	@Column(updatable = false, nullable=false)
 	private UUID profileId;
 	private String email;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime createdAt;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime updatedAt;
 	
 	@OneToOne

@@ -37,6 +37,7 @@ public class Preference {
 	private RoutePreference routePreference;
 	private Boolean slowPace;
 	private Integer maxWalkingTime;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime updatedAt;
 	
 	
