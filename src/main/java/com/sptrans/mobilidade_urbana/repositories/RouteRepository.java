@@ -28,5 +28,21 @@ public interface RouteRepository extends JpaRepository<Route, String> {
 				
 			""")
 	Page<Route> search(@Param("query") String query, Pageable pageable);
+	
+	@Query(value="""
+			SELECT DISTINCT route
+			FROM Route route
+			JOIN route.trips trip
+			JOIN trip.stopTimes stop_time
+			WHERE stop_time.stop.id = :stopId
+			""",
+			countQuery = """
+					SELECT COUNT(DISTINCT route)
+					FROM Route route
+					JOIN route.trips trip
+					JOIN trip.stopTimes stop_time
+					WHERE stop_time.stop.id = :stopId
+					""")
+	Page<Route> findRoutesByStopId(@Param("stopId") String stopId, Pageable pageable);
 
 }

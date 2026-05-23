@@ -42,5 +42,11 @@ public class RouteController {
 		Page<RouteDTO> routes = service.search(query, pageable);
 		return ResponseEntity.ok(PageMapper.from(routes));
 	}
+	
+	@GetMapping("/stops/{stopId}/routes")
+	public ResponseEntity<PageResponseDTO<RouteDTO>> findRoutesByStop(@AuthenticationPrincipal Device device, @PathVariable String stopId, Pageable pageable){
+		Page<RouteDTO> routes = service.findByStopId(stopId, pageable);
+		return ResponseEntity.ok(PageMapper.from(routes));
+	}
 
 }

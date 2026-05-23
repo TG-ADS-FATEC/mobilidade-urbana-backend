@@ -49,5 +49,10 @@ public class RouteService {
 		return repository.search(query, pageable).map(mapper::toDTO);
 	}
 	
+	@Transactional(readOnly=true)
+	public Page<RouteDTO> findByStopId(String stopId, Pageable pageable){
+		return repository.findRoutesByStopId(stopId, pageable).map(mapper::toDTO);
+	}
+	
 
 }
