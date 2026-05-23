@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
 
+import com.sptrans.mobilidade_urbana.dto.CalendarDTO;
 import com.sptrans.mobilidade_urbana.dto.CalendarRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Calendar;
 
@@ -35,6 +36,23 @@ public class CalendarMapper {
 	
 	private Boolean parseBoolean(String value) {
 		return "1".equals(value) || "true".equalsIgnoreCase(value);
+	}
+	
+	public CalendarDTO toDTO(Calendar entity) {
+		
+		if(entity==null) return null;
+		
+		return new CalendarDTO(
+				entity.getServiceId(),
+				entity.getMonday(),
+				entity.getTuesday(),
+				entity.getWednesday(),
+				entity.getThursday(),
+				entity.getFriday(),
+				entity.getSaturday(),
+				entity.getSunday(),
+				entity.getStartDate(),
+				entity.getEndDate());
 	}
 
 }

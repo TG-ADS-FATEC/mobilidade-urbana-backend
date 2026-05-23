@@ -1,7 +1,13 @@
 package com.sptrans.mobilidade_urbana.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.sptrans.mobilidade_urbana.dto.TripDTO;
 import com.sptrans.mobilidade_urbana.dto.TripRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Calendar;
 import com.sptrans.mobilidade_urbana.entities.DirectionId;
@@ -49,6 +55,36 @@ public class TripMapper {
 		trip.setShape(shape);
 		
 		return trip;
+	}
+	
+	public TripDTO toDTO(Trip entity) {
+		
+		if(entity==null) {
+			return null;
+		}
+		
+		return new TripDTO(
+				entity.getTripId(),
+				entity.getTripHeadsign(),
+				entity.getDirectionId(),
+				entity.getRoute().getRouteId(),
+				entity.getCalendar().getServiceId(),
+				entity.getShape().getShapeId());
+		
+	}
+	
+	public List<TripDTO> toDTOList(List<Trip> entities) {
+		if(entities == null || entities.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		return entities.stream()
+				.map(this::toDTO)
+				.collect(Collectors.toList());
+	}
+	
+	public Page<TripDTO> toDTOPage(Page<Trip> page) {
+		return page.map(this::toDTO);
 	}
 	
 

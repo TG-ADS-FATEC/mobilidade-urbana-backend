@@ -1,9 +1,13 @@
 package com.sptrans.mobilidade_urbana.domain.gtfs;
 
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class GTFSTime {
+public class GTFSTime implements Comparable<GTFSTime> {
 	
 	private int secondsFromMidnight;
 	
@@ -14,6 +18,11 @@ public class GTFSTime {
 	}
 	
 	public static GTFSTime parse(String value) {
+		
+		if(value == null || value.isBlank()) {
+			return null;
+		}
+		
 		String [] parts = value.split(":");
 		
 		int hours = Integer.parseInt(parts[0]);
@@ -26,5 +35,46 @@ public class GTFSTime {
 	public int getSecondsFromMidnight() {
 		return secondsFromMidnight;
 	}
+	
+	@JsonValue
+	@Override
+	public String toString() {
+		
+		int total = secondsFromMidnight;
+		
+		int hours = total/3600;
+		int minutes = (total%3600) / 60;
+		int seconds = total % 60;
+		
+		return String.format(
+				"%02d:%02d:%02d",
+				hours,
+				minutes,
+				seconds);
+	}
+	
+	@Override
+	public int compareTo(GTFSTime other) {
+		return Integer.compare(this.secondsFromMidnight, other.secondsFromMidnight);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(secondsFromMidnight);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GTFSTime other = (GTFSTime) obj;
+		return secondsFromMidnight == other.secondsFromMidnight;
+	}
+	
+	
 
 }

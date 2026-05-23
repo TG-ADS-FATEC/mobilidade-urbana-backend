@@ -1,16 +1,18 @@
 package com.sptrans.mobilidade_urbana.dto;
 
+import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
+
 public class StopTimeDTO {
 	
 	private String tripId;
-	private String arrivalTime;
-	private String departureTime;
+	private GTFSTime arrivalTime;
+	private GTFSTime departureTime;
 	private String stopId;
 	private Integer stopSequence;
 	
 	public StopTimeDTO() {}
 
-	public StopTimeDTO(String tripId, String arrivalTime, String departureTime, String stopId, Integer stopSequence) {
+	public StopTimeDTO(String tripId, GTFSTime arrivalTime, GTFSTime departureTime, String stopId, Integer stopSequence) {
 		super();
 		this.tripId = tripId;
 		this.arrivalTime = arrivalTime;
@@ -27,19 +29,19 @@ public class StopTimeDTO {
 		this.tripId = tripId;
 	}
 
-	public String getArrivalTime() {
+	public GTFSTime getArrivalTime() {
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(String arrivalTime) {
+	public void setArrivalTime(GTFSTime arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
 
-	public String getDepartureTime() {
+	public GTFSTime getDepartureTime() {
 		return departureTime;
 	}
 
-	public void setDepartureTime(String departureTime) {
+	public void setDepartureTime(GTFSTime departureTime) {
 		this.departureTime = departureTime;
 	}
 

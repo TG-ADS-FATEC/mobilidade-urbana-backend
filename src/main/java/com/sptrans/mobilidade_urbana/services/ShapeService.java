@@ -6,18 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.sptrans.mobilidade_urbana.dto.ShapeDTO;
 import com.sptrans.mobilidade_urbana.dto.ShapeRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Shape;
 import com.sptrans.mobilidade_urbana.entities.ShapePoint;
+import com.sptrans.mobilidade_urbana.mappers.ShapeMapper;
 import com.sptrans.mobilidade_urbana.mappers.ShapePointMapper;
 import com.sptrans.mobilidade_urbana.repositories.ShapeRepository;
-
-import jakarta.transaction.Transactional;
+import com.sptrans.mobilidade_urbana.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class ShapeService {
+	
+	@Autowired
+	ShapeMapper shapeMapper;
 	
 	private final ShapePointMapper shapePointMapper;
 	private final ShapeRepository shapeRepository;
@@ -50,6 +56,13 @@ public class ShapeService {
 		shapeRepository.saveAll(shapesMap.values());
 		shapeRepository.flush();
 		
+	}
+	
+	@Transactional(readOnly=true)
+	public ShapeDTO findById(String shapeId) {
+		Shape shape = shapeRepository.findById(shapeId).orElseThrow(
+				() -> new ResourceNotFoundException("Itinerário não encontrado"));
+		return shapeMapper.toDTO(shape);
 	}
 	
 	
