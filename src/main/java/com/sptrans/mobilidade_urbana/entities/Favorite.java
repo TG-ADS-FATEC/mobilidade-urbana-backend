@@ -2,6 +2,7 @@ package com.sptrans.mobilidade_urbana.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class Favorite {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long favoriteId;
 	private String favoriteName;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime createdAt;
 	
 	@ManyToOne

@@ -28,6 +28,7 @@ public class Device {
 	private Boolean active = true;
 	@Column(nullable = false)
 	private Integer tokenVersion = 0;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime createdAt;
 	
 	@OneToOne(mappedBy="device")

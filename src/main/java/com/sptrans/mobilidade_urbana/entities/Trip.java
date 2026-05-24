@@ -37,7 +37,7 @@ public class Trip {
 	List<Frequency> frequencies = new ArrayList<>();
 	
 	@OneToMany(mappedBy="trip", cascade=CascadeType.ALL)
-	@OrderBy("id.stopSequence ASC")
+	@OrderBy("stopSequence ASC")
 	private List<StopTime> stopTimes = new ArrayList<>();
 	
 	public Trip() {}
@@ -99,6 +99,14 @@ public class Trip {
 
 	public void setShape(Shape shape) {
 		this.shape = shape;
+	}
+
+	public List<Frequency> getFrequencies() {
+		return frequencies;
+	}
+
+	public List<StopTime> getStopTimes() {
+		return stopTimes;
 	}
 	
 	

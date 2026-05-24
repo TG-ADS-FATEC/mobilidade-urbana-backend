@@ -1,15 +1,17 @@
 package com.sptrans.mobilidade_urbana.dto;
 
+import com.sptrans.mobilidade_urbana.gtfs.GTFSTime;
+
 public class FrequencyDTO {
 	
 	private String tripId;
-	private String startTime;
-	private String endTime;
+	private GTFSTime startTime;
+	private GTFSTime endTime;
 	private Integer headwaySeconds;
 	
 	public FrequencyDTO() {}
 
-	public FrequencyDTO(String tripId, String startTime, String endTime, Integer headwaySeconds) {
+	public FrequencyDTO(String tripId, GTFSTime startTime, GTFSTime endTime, Integer headwaySeconds) {
 		super();
 		this.tripId = tripId;
 		this.startTime = startTime;
@@ -25,19 +27,19 @@ public class FrequencyDTO {
 		this.tripId = tripId;
 	}
 
-	public String getStartTime() {
+	public GTFSTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(GTFSTime startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public GTFSTime getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(GTFSTime endTime) {
 		this.endTime = endTime;
 	}
 

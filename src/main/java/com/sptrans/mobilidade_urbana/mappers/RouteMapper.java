@@ -1,7 +1,13 @@
 package com.sptrans.mobilidade_urbana.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.sptrans.mobilidade_urbana.dto.RouteDTO;
 import com.sptrans.mobilidade_urbana.dto.RouteRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Agency;
 import com.sptrans.mobilidade_urbana.entities.Route;
@@ -34,6 +40,39 @@ public class RouteMapper {
 		route.setAgency(entityManager.getReference(Agency.class, rawDto.getAgencyId()));
 		
 		return route;
+	}
+	
+	public RouteDTO toDTO(Route entity) {
+		
+		if(entity==null) {
+			return null;
+		}
+		
+		return new RouteDTO(
+				entity.getRouteId(),
+				entity.getRouteShortName(),
+				entity.getRouteLongName(),
+				entity.getRouteType(),
+				entity.getRouteColor(),
+				entity.getRouteTextColor(),
+				entity.getAgency().getAgencyId()
+				);
+		
+	}
+	
+	
+	public List<RouteDTO> toDTOList(List<Route> entities) {
+		if(entities == null || entities.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		return entities.stream()
+				.map(this::toDTO)
+				.collect(Collectors.toList());
+	}
+	
+	public Page<RouteDTO> toDTOPage(Page<Route> page) {
+		return page.map(this::toDTO);
 	}
 
 }

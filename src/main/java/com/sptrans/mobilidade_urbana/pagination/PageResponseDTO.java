@@ -1,0 +1,14 @@
+package com.sptrans.mobilidade_urbana.pagination;
+
+import java.util.List;
+
+public record PageResponseDTO<T>(
+		
+		List<T> items,
+		int page,
+		int size,
+		long totalElements,
+		int totalPages,
+		boolean hasNext,
+		boolean hasPrevious) {
+}

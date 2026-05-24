@@ -2,6 +2,7 @@ package com.sptrans.mobilidade_urbana.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class Notification {
 	private LocalDateTime scheduledTime; // horário programado do alerta
 	private LocalDateTime sentAt;
 	private NotificationStatus status;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime createdAt;
 	
 	@ManyToOne
