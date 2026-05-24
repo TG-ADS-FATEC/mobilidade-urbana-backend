@@ -5,19 +5,21 @@ import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="stop_times")
 public class StopTime {
 	
-	@EmbeddedId
-	private StopTimeId stopTimeId;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long stopTimeId;
 	
 	@Embedded
 	@AttributeOverride(
@@ -33,8 +35,9 @@ public class StopTime {
 			)
 	private GTFSTime departureTime;
 	
+	private Integer stopSequence;
+	
 	@ManyToOne
-	@MapsId("tripId")
 	@JoinColumn(name="trip_id")
 	private Trip trip;
 	
@@ -44,21 +47,22 @@ public class StopTime {
 	
 	public StopTime() {}
 
-	public StopTime(StopTimeId stopTimeId, GTFSTime arrivalTime, GTFSTime departureTime,
-			Trip trip, Stop stop) {
+	public StopTime(Long stopTimeId, GTFSTime arrivalTime, GTFSTime departureTime, Integer stopSequence, Trip trip,
+			Stop stop) {
 		super();
 		this.stopTimeId = stopTimeId;
 		this.arrivalTime = arrivalTime;
 		this.departureTime = departureTime;
+		this.stopSequence = stopSequence;
 		this.trip = trip;
 		this.stop = stop;
 	}
 
-	public StopTimeId getStopTimeId() {
+	public Long getStopTimeId() {
 		return stopTimeId;
 	}
 
-	public void setStopTimeId(StopTimeId stopTimeId) {
+	public void setStopTimeId(Long stopTimeId) {
 		this.stopTimeId = stopTimeId;
 	}
 
@@ -78,6 +82,14 @@ public class StopTime {
 		this.departureTime = departureTime;
 	}
 
+	public Integer getStopSequence() {
+		return stopSequence;
+	}
+
+	public void setStopSequence(Integer stopSequence) {
+		this.stopSequence = stopSequence;
+	}
+
 	public Trip getTrip() {
 		return trip;
 	}
@@ -93,7 +105,6 @@ public class StopTime {
 	public void setStop(Stop stop) {
 		this.stop = stop;
 	}
-	
 	
 
 }

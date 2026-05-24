@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sptrans.mobilidade_urbana.dto.RouteDTO;
+import com.sptrans.mobilidade_urbana.dto.RouteItineraryDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
 import com.sptrans.mobilidade_urbana.pagination.PageMapper;
 import com.sptrans.mobilidade_urbana.pagination.PageResponseDTO;
@@ -47,6 +48,11 @@ public class RouteController {
 	public ResponseEntity<PageResponseDTO<RouteDTO>> findRoutesByStop(@AuthenticationPrincipal Device device, @PathVariable String stopId, Pageable pageable){
 		Page<RouteDTO> routes = service.findByStopId(stopId, pageable);
 		return ResponseEntity.ok(PageMapper.from(routes));
+	}
+	
+	@GetMapping("/{routeId}/itinerary")
+	public ResponseEntity<RouteItineraryDTO> getItinerary(@AuthenticationPrincipal Device device, @PathVariable String routeId){
+		return ResponseEntity.ok(service.getItinerary(routeId));
 	}
 
 }

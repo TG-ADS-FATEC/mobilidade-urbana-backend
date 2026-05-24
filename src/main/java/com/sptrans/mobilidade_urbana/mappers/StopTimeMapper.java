@@ -12,7 +12,6 @@ import com.sptrans.mobilidade_urbana.dto.StopTimeDTO;
 import com.sptrans.mobilidade_urbana.dto.StopTimeRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Stop;
 import com.sptrans.mobilidade_urbana.entities.StopTime;
-import com.sptrans.mobilidade_urbana.entities.StopTimeId;
 import com.sptrans.mobilidade_urbana.entities.Trip;
 
 import jakarta.persistence.EntityManager;
@@ -35,8 +34,6 @@ public class StopTimeMapper {
 		
 		StopTime stopTime = new StopTime();
 		
-		stopTime.setStopTimeId(new StopTimeId(rawDto.getTripId(), Integer.parseInt(rawDto.getStopSequence())));
-		
 		stopTime.setTrip(entityManager.getReference(Trip.class,rawDto.getTripId()));
 		
 		stopTime.setStop(entityManager.getReference(Stop.class, rawDto.getStopId()));
@@ -44,6 +41,8 @@ public class StopTimeMapper {
 		stopTime.setArrivalTime(GTFSTime.parse(rawDto.getArrivalTime()));
 		
 		stopTime.setDepartureTime(GTFSTime.parse(rawDto.getDepartureTime()));
+		
+		stopTime.setStopSequence(Integer.parseInt(rawDto.getStopSequence()));
 		
 		return stopTime;
 	}
@@ -57,7 +56,7 @@ public class StopTimeMapper {
 				entity.getArrivalTime(),
 				entity.getDepartureTime(),
 				entity.getStop().getStopId(),
-				entity.getStopTimeId().getStopSequence());
+				entity.getStopSequence());
 	}
 	
 	public List<StopTimeDTO> toDTOList(List<StopTime> entities) {

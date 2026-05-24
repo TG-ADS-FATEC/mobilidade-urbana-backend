@@ -24,13 +24,19 @@ public class StopService {
 	@Transactional(readOnly = true)
 	public StopDTO findById(String stopId) {
 		Stop stop = repository.findById(stopId).orElseThrow(
-				() -> new ResourceNotFoundException("Viagem não encontrada"));
+				() -> new ResourceNotFoundException("Parada não encontrada"));
 		return mapper.toDTO(stop);
 	}
 	
 	@Transactional(readOnly=true)
 	public Page<StopDTO> findAll(Pageable pageable){
 		Page<Stop> stops = repository.findAll(pageable);
+		return mapper.toDTOPage(stops);
+	}
+	
+	@Transactional(readOnly=true)
+	public Page<StopDTO> findStopsByRoute(String routeId, Pageable pageable){
+		Page<Stop> stops = repository.findStopsByRouteId(routeId, pageable);
 		return mapper.toDTOPage(stops);
 	}
 

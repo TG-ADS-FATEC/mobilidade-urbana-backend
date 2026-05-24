@@ -23,7 +23,7 @@ public class StopTimeService {
 	private StopTimeMapper mapper;
 	
 	@Transactional(readOnly = true)
-	public StopTimeDTO findById(StopTimeId stopTimeId) {
+	public StopTimeDTO findById(Long stopTimeId) {
 		StopTime stopTime = repository.findById(stopTimeId).orElseThrow(
 				() -> new ResourceNotFoundException("Tempo da Parada não encontrada"));
 		return mapper.toDTO(stopTime);
