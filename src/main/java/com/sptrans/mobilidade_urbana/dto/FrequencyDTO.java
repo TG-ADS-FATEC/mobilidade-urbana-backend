@@ -1,6 +1,6 @@
 package com.sptrans.mobilidade_urbana.dto;
 
-import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
+import com.sptrans.mobilidade_urbana.gtfs.GTFSTime;
 
 public class FrequencyDTO {
 	

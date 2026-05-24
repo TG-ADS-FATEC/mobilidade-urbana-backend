@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
 import com.sptrans.mobilidade_urbana.dto.StopTimeDTO;
 import com.sptrans.mobilidade_urbana.dto.StopTimeRawDTO;
 import com.sptrans.mobilidade_urbana.entities.Stop;
 import com.sptrans.mobilidade_urbana.entities.StopTime;
 import com.sptrans.mobilidade_urbana.entities.Trip;
+import com.sptrans.mobilidade_urbana.gtfs.GTFSTime;
 
 import jakarta.persistence.EntityManager;
 

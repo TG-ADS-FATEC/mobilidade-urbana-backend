@@ -1,5 +1,7 @@
 package com.sptrans.mobilidade_urbana.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sptrans.mobilidade_urbana.dto.ArrivalDTO;
 import com.sptrans.mobilidade_urbana.dto.StopDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
 import com.sptrans.mobilidade_urbana.pagination.PageMapper;
@@ -40,6 +43,11 @@ public class StopController {
 	public ResponseEntity<PageResponseDTO<StopDTO>> findStopsByRoute(@AuthenticationPrincipal Device device,@PathVariable String routeId, Pageable pageable){
 		Page<StopDTO> stops = service.findStopsByRoute(routeId, pageable);
 		return ResponseEntity.ok(PageMapper.from(stops));
+	}
+	
+	@GetMapping(value="{stopId}/arrivals")
+	public List<ArrivalDTO> getArrivals(@AuthenticationPrincipal Device device, @PathVariable String stopId){
+		return service.getArrivals(stopId);
 	}
 
 }

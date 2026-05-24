@@ -1,4 +1,4 @@
-package com.sptrans.mobilidade_urbana.domain.gtfs;
+package com.sptrans.mobilidade_urbana.gtfs;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
 package com.sptrans.mobilidade_urbana.entities;
 
-import com.sptrans.mobilidade_urbana.domain.gtfs.GTFSTime;
+import com.sptrans.mobilidade_urbana.gtfs.GTFSTime;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
