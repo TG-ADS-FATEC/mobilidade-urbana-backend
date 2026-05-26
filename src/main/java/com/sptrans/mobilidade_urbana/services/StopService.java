@@ -25,7 +25,7 @@ public class StopService {
 	private StopRepository repository;
 	
 	@Autowired
-	private StopTimeRepository stopTimeRepository; 
+	private StopTimeRepository stopTimeRepository;
 	
 	@Autowired
 	private StopMapper mapper;
@@ -65,7 +65,7 @@ public class StopService {
 					
 					int difference = arrivalSeconds - nowSeconds;
 					
-					if(difference < nowSeconds) {
+					if(difference < 0) {
 						difference += 24 * 3600;
 					}
 					

@@ -17,7 +17,7 @@ public interface StopTimeRepository extends JpaRepository<StopTime, Long> {
 			JOIN FETCH trip.route
 			JOIN FETCH stop_time.stop
 			WHERE stop_time.stop.stopId = :stopId
-			AND stop_time.arrivalTime.secondsFromMidnight BETWEEN :currentSeconds AND :maxSeconds
+			AND ((stop_time.arrivalTime.secondsFromMidnight BETWEEN :currentSeconds AND :maxSeconds) OR (:maxSeconds > 86400 AND stop_time.arrivalTime.secondsFromMidnight BETWEEN 0 AND (:maxSeconds - 86400)))
 			ORDER BY stop_time.arrivalTime.secondsFromMidnight
 			""")
 	List<StopTime> findNextArrivals(@Param("stopId")String stopId, @Param("currentSeconds")int currentSeconds, @Param("maxSeconds") int maxSeconds);
