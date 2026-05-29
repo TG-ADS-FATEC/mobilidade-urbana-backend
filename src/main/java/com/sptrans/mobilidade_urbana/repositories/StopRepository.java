@@ -20,5 +20,17 @@ public interface StopRepository extends JpaRepository<Stop, String> {
 			WHERE route.id = :routeId 
 			""")
 	Page<Stop> findStopsByRouteId(@Param("routeId") String routeId, Pageable pageable);
+	
+	@Query(value = """
+			SELECT * FROM stop stop 
+			WHERE ST_DistanceSphere(ST_MakePoint(stop.stop_longitude, stop.stop_latitude), ST_MakePoint(:longitude, :latitude)) <= :radius
+			ORDER BY ST_DistanceSphere(ST_MakePoint(stop.stop_longitude, stop.stop_latitude), ST_MakePoint(:longitude, :latitude))""",
+			countQuery = """
+					SELECT count(*) FROM stop stop
+					WHERE ST_DistanceSphere(ST_MakePoint(stop.stop_longitude, stop.stop_latitude), ST_MakePoint(:longitude, :latitude)) <= :radius
+					""",
+			nativeQuery = true 
+			)
+	Page<Stop> findNearbyStops(@Param("latitude") double latitude, @Param("longitude") double longitude, @Param("radius") double radius, Pageable pageable);
 
 }

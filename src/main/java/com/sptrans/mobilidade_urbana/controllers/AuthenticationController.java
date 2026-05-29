@@ -10,13 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sptrans.mobilidade_urbana.dto.DeviceDTO;
 import com.sptrans.mobilidade_urbana.security.AuthenticationResponse;
 import com.sptrans.mobilidade_urbana.security.AuthenticationService;
+import com.sptrans.mobilidade_urbana.security.SecurityConfiguration;
 import com.sptrans.mobilidade_urbana.security.TokenData;
 import com.sptrans.mobilidade_urbana.security.TokenService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/authentication")
+@SecurityRequirement(name = SecurityConfiguration.SECURITY)
 public class AuthenticationController {
 	
 	@Autowired

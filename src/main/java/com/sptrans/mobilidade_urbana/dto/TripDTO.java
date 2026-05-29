@@ -2,13 +2,21 @@ package com.sptrans.mobilidade_urbana.dto;
 
 import com.sptrans.mobilidade_urbana.entities.DirectionId;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class TripDTO {
 	
+	@Schema(description = "Id da viagem", example = "1012-10-0")
 	private String tripId;
+	@Schema(description = "Placa indicando o destino da viagem ", example = "Jd. Monte Belo")
 	private String tripHeadsign;
+	@Schema(description = "Direção da viagem do ônibus(ida ou volta)", example = "0")
 	private DirectionId directionId;
+	@Schema(description = "Id da linha", example = "1012-10")
 	private String routeId;
+	@Schema(description = "Id dos dias de serviço(calendário)", example = "USD")
 	private String serviceId;
+	@Schema(description = "Id do caminho percorrido pelo ônibus de uma linha", example = "84609")
 	private String shapeId;
 	
 	public TripDTO() {}

@@ -83,5 +83,11 @@ public class StopService {
 				);
 				 }).toList();
 	}
+	
+	@Transactional(readOnly=true)
+	public Page<StopDTO> findNearbyStops(double latitude, double longitude, double radiusInMeters, Pageable pageable){
+		Page<Stop> stops = repository.findNearbyStops(latitude, longitude, radiusInMeters, pageable);
+		return mapper.toDTOPage(stops);
+	}
 
 }

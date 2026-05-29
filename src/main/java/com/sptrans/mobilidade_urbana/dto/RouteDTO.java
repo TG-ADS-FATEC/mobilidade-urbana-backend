@@ -2,14 +2,23 @@ package com.sptrans.mobilidade_urbana.dto;
 
 import com.sptrans.mobilidade_urbana.entities.RouteType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class RouteDTO {
 	
+	@Schema(description = "Id da linha", example = "1012-10")
 	private String routeId;
+	@Schema(description = "Nome curto da linha", example = "1012-10")
 	private String routeShortName;
+	@Schema(description = "Nome longo da linha", example = "Term. Jd. Britania - Jd. Monte Belo")
 	private String routeLongName;
+	@Schema(description = "Tipo de transporte público", example = "3")
 	private RouteType routeType;
+	@Schema(description = "Cor da linha", example = "509E2F")
 	private String routeColor;
+	@Schema(description = "Cor do texto da linha", example = "FFFFFF")
 	private String routeTextColor;
+	@Schema(description = "Id da agência", example = "1")
 	private String agencyId;
 	
 	public RouteDTO() {}

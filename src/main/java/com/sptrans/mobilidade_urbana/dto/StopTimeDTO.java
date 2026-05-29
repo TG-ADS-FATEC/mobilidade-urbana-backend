@@ -2,12 +2,19 @@ package com.sptrans.mobilidade_urbana.dto;
 
 import com.sptrans.mobilidade_urbana.gtfs.GTFSTime;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class StopTimeDTO {
 	
+	@Schema(description = "Id da viagem", example = "1012-10-0")
 	private String tripId;
+	@Schema(description = "Tempo de chegada na parada", example = "07:00:00")
 	private GTFSTime arrivalTime;
+	@Schema(description = "Tempo de saída na parada", example = "07:00:00")
 	private GTFSTime departureTime;
+	@Schema(description = "Id da parada", example = "301790")
 	private String stopId;
+	@Schema(description = "Sequência das paradas", example = "1")
 	private Integer stopSequence;
 	
 	public StopTimeDTO() {}

@@ -1,11 +1,18 @@
 package com.sptrans.mobilidade_urbana.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class StopDTO {
 	
+	@Schema(description = "Id da parada", example = "19073")
 	private String stopId;
+	@Schema(description = "Nome da parada", example = "Rod. Arão Sahm, 25020")
 	private String stopName;
+	@Schema(description = "Descrição da parada", example = "Ref.: Av. Rubi")
 	private String stopDescription;
+	@Schema(description = "Latitude da parada", example = "-23.373502")
 	private Double stopLatitude;
+	@Schema(description = "Longitude da parada", example = "-46.575335")
 	private Double stopLongitude;
 	
 	public StopDTO() {}

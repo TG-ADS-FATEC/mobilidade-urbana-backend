@@ -18,12 +18,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.sptrans.mobilidade_urbana.dto.AlertDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
+import com.sptrans.mobilidade_urbana.security.SecurityConfiguration;
 import com.sptrans.mobilidade_urbana.services.AlertService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value="/profiles/alerts")
+@SecurityRequirement(name = SecurityConfiguration.SECURITY)
 public class AlertController {
 	
 	@Autowired

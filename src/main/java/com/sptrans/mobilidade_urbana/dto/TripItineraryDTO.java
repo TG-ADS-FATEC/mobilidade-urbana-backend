@@ -2,9 +2,13 @@ package com.sptrans.mobilidade_urbana.dto;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class TripItineraryDTO {
 	
+	@Schema(description = "Id da viagem", example = "1012-10-0")
 	String tripId;
+	@Schema(description = "Lista de paradas")
 	List<StopTimeItineraryDTO> stops;
 	
 	public TripItineraryDTO() {}

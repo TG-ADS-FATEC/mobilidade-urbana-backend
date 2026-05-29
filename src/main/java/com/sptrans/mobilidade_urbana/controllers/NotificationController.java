@@ -19,12 +19,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.sptrans.mobilidade_urbana.dto.NotificationDTO;
 import com.sptrans.mobilidade_urbana.dto.NotificationRequestDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
+import com.sptrans.mobilidade_urbana.security.SecurityConfiguration;
 import com.sptrans.mobilidade_urbana.services.NotificationService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value="/profiles/notifications")
+@SecurityRequirement(name = SecurityConfiguration.SECURITY)
 public class NotificationController {
 	
 	@Autowired
