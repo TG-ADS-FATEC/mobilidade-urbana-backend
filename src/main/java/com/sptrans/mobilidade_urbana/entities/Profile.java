@@ -41,7 +41,10 @@ public class Profile {
 	private Preference preference;
 	
 	@OneToMany(mappedBy="profile")
-	private List<Favorite> favorites = new ArrayList<>();
+	private List<FavoriteRoute> favoriteRoutes = new ArrayList<>();
+	
+	@OneToMany(mappedBy="profile")
+	private List<FavoriteTrip> favoriteTrips = new ArrayList<>();
 	
 	@OneToMany(mappedBy="profile")
 	private List<Alert> alerts = new ArrayList<>();
@@ -147,10 +150,13 @@ public class Profile {
 	}
 	
 	
-	public List<Favorite> getFavorites() {
-		return favorites;
+	public List<FavoriteRoute> getFavoriteRoutes() {
+		return favoriteRoutes;
 	}
 	
+	public List<FavoriteTrip> getFavoriteTrips() {
+		return favoriteTrips;
+	}
 	
 	public List<Alert> getAlerts(){
 		return alerts;

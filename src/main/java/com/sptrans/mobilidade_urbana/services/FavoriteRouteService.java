@@ -8,87 +8,66 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sptrans.mobilidade_urbana.dto.FavoriteDTO;
+import com.sptrans.mobilidade_urbana.dto.FavoriteRouteDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
-import com.sptrans.mobilidade_urbana.entities.Favorite;
+import com.sptrans.mobilidade_urbana.entities.FavoriteRoute;
 import com.sptrans.mobilidade_urbana.entities.Profile;
-import com.sptrans.mobilidade_urbana.repositories.FavoriteRepository;
+import com.sptrans.mobilidade_urbana.mappers.FavoriteRouteMapper;
+import com.sptrans.mobilidade_urbana.repositories.FavoriteRouteRepository;
 import com.sptrans.mobilidade_urbana.repositories.ProfileRepository;
 import com.sptrans.mobilidade_urbana.services.exceptions.DatabaseException;
 import com.sptrans.mobilidade_urbana.services.exceptions.ResourceNotFoundException;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @Service
-public class FavoriteService {
+public class FavoriteRouteService {
 	
 	@Autowired
-	private FavoriteRepository repository;
+	private FavoriteRouteRepository repository;
 	
 	@Autowired
 	private ProfileRepository profileRepository;
 	
+	@Autowired
+	private FavoriteRouteMapper mapper;
+	
 	@Transactional(readOnly = true)
-	public FavoriteDTO findById(Long favoriteId) {
-		Favorite favorite = repository.findById(favoriteId).orElseThrow(
+	public FavoriteRouteDTO findById(Long favoriteRouteId) {
+		FavoriteRoute favoriteRoute = repository.findById(favoriteRouteId).orElseThrow(
 				() -> new ResourceNotFoundException("Favorito não encontrado"));
-		return new FavoriteDTO(favorite);
+		return mapper.toDTO(favoriteRoute);
 	}
 	
 	@Transactional(readOnly=true)
-	public List<FavoriteDTO> findByDevice(Device device){
+	public List<FavoriteRouteDTO> findByDevice(Device device){
 		
 		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
 		
-		List<Favorite> favorites = repository.findByProfile(profile);
+		List<FavoriteRoute> favorites = repository.findByProfile(profile);
 		
-		return favorites.stream().map(FavoriteDTO::new).toList();
+		return mapper.toDTOList(favorites);
 	}
 	
 	@Transactional
-	public FavoriteDTO insert(Device device, FavoriteDTO dto) {
+	public FavoriteRouteDTO insert(Device device, FavoriteRouteDTO dto) {
 		
 		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
 		
-		Favorite entity = new Favorite();
-		copyDtoToEntity(dto, entity);
+		FavoriteRoute entity = mapper.toEntity(dto, profile.getProfileId());
 		
-		entity.setProfile(profile);
-		
-		profile.getFavorites().add(entity);
+		profile.getFavoriteRoutes().add(entity);
 		
 		entity = repository.save(entity);
 		
-		return new FavoriteDTO(entity);
-	}
-	
-	@Transactional
-	public FavoriteDTO update(Device device, Long favoriteId, FavoriteDTO dto) {
-		try {
-			Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
-					.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
-			Favorite entity = repository.findById(favoriteId)
-					.orElseThrow(() -> new ResourceNotFoundException("Favorito não encontrado"));
-			
-			if(!entity.getProfile().getProfileId().equals(profile.getProfileId())) {
-				throw new ResourceNotFoundException("Favorito não pertence ao perfil");
-			}
-			copyDtoToEntity(dto, entity);
-			entity = repository.save(entity);
-			return new FavoriteDTO(entity);
-		}
-		catch(EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Favorito não encontrado");
-		}
+		return mapper.toDTO(entity);
 	}
 	
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public void delete(Device device, Long favoriteId) {
+	public void delete(Device device, Long favoriteRouteId) {
 		Profile profile = profileRepository.findByDevice_DeviceId(device.getDeviceId())
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado"));
-		Favorite entity = repository.findById(favoriteId)
+		FavoriteRoute entity = repository.findById(favoriteRouteId)
 				.orElseThrow(() -> new ResourceNotFoundException("Favorito não encontrado"));
 		
 		if(!entity.getProfile().getProfileId().equals(profile.getProfileId())) {
@@ -101,10 +80,6 @@ public class FavoriteService {
 			throw new DatabaseException("Falha de integridade referencial");
 		}
 		
-	}
-	
-	private void copyDtoToEntity(FavoriteDTO dto, Favorite entity) {
-		entity.setFavoriteName(dto.getFavoriteName());
 	}
 	
 
