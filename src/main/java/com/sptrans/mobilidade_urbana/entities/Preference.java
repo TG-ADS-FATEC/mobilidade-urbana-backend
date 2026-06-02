@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -38,36 +39,43 @@ public class Preference {
 	private Boolean slowPace;
 	private Integer maxWalkingTime;
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private LocalDateTime createdAt;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime updatedAt;
 	
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="device_id", nullable=false, unique=true)
+	private Device device;
 	
-	@OneToOne(mappedBy="preference")
+	@OneToOne(mappedBy="preference", cascade=CascadeType.ALL)
 	private Profile profile;
 	
 	public Preference() {}
 	
-
 	public Preference(UUID preferenceId, Set<TransportType> transportTypes, RoutePreference routePreference,
-			Boolean slowPace, Integer maxWalkingTime, LocalDateTime updatedAt) {
+			Boolean slowPace, Integer maxWalkingTime, LocalDateTime createdAt, LocalDateTime updatedAt, Device device) {
 		super();
 		this.preferenceId = preferenceId;
 		this.transportTypes = transportTypes;
 		this.routePreference = routePreference;
 		this.slowPace = slowPace;
 		this.maxWalkingTime = maxWalkingTime;
+		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.device = device;
 	}
-	
+
 	@PrePersist
 	public void prePersist() {
-		updatedAt = LocalDateTime.now(); 
+		LocalDateTime now = LocalDateTime.now();
+		createdAt = now;
+		updatedAt = now;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		updatedAt = LocalDateTime.now(); 
 	}
-
 
 	public UUID getPreferenceId() {
 		return preferenceId;
@@ -109,6 +117,14 @@ public class Preference {
 		this.maxWalkingTime = maxWalkingTime;
 	}
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
@@ -117,12 +133,16 @@ public class Preference {
 		this.updatedAt = updatedAt;
 	}
 
-	public Profile getProfile() {
-		return profile;
+	public Device getDevice() {
+		return device;
 	}
 
-	public void setProfile(Profile profile) {
-		this.profile = profile;
+	public void setDevice(Device device) {
+		this.device = device;
+	}
+
+	public Profile getProfile() {
+		return profile;
 	}
 	
 	

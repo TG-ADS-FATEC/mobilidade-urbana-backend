@@ -1,72 +1,52 @@
 package com.sptrans.mobilidade_urbana.dto;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-import com.sptrans.mobilidade_urbana.entities.Profile;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 
 public class ProfileDTO {
 	
-	private UUID profileId;
+	@Schema(description="E-mail do usuário", example="joaodasilva@yahoo.com")
 	@Email(message = "Email inválido")
 	private String email;
+	@Schema(description = "Data de criação do perfil", example = "2026-05-07T22:09:49.22619787")
 	private LocalDateTime createdAt;
+	@Schema(description = "Data de atualização da perfil", example = "2026-05-07T22:09:49.22619787")
 	private LocalDateTime updatedAt;
-	private UUID deviceId;
-	private UUID preferenceId;
 	
 	public ProfileDTO() {}
 
-	public ProfileDTO(UUID profileId, String email, LocalDateTime createdAt, LocalDateTime updatedAt, UUID deviceId,
-			UUID preferenceId) {
+	public ProfileDTO(@Email(message = "Email inválido") String email, LocalDateTime createdAt,
+			LocalDateTime updatedAt) {
 		super();
-		this.profileId = profileId;
 		this.email = email;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.deviceId = deviceId;
-		this.preferenceId = preferenceId;
-	}
-	
-	public ProfileDTO(Profile entity) {
-		profileId = entity.getProfileId();
-		email = entity.getEmail();
-		createdAt = entity.getCreatedAt();
-		updatedAt = entity.getUpdatedAt();
-		deviceId = entity.getDevice().getDeviceId();
-		if(entity.getPreference()!=null) {
-			preferenceId = entity.getPreference().getPreferenceId();
-		}
-		else {
-			preferenceId = null;
-		}
-		
-	}
-
-	public UUID getprofileId() {
-		return profileId;
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public UUID getDeviceId() {
-		return deviceId;
-	}
-
-	public UUID getPreferenceId() {
-		return preferenceId;
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	
 

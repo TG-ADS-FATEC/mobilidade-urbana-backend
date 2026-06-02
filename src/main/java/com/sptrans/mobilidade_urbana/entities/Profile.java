@@ -32,12 +32,12 @@ public class Profile {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime updatedAt;
 	
-	@OneToOne
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="device_id", nullable=false, unique=true)
 	private Device device;
 	
-	@OneToOne(cascade=CascadeType.ALL, orphanRemoval= true)
-	@JoinColumn(name="preference_id", nullable=true, unique=true)
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="preference_id", nullable=false, unique=true)
 	private Preference preference;
 	
 	@OneToMany(mappedBy="profile")

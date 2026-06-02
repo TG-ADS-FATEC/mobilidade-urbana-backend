@@ -3,6 +3,7 @@ package com.sptrans.mobilidade_urbana.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +32,10 @@ public class Device {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime createdAt;
 	
-	@OneToOne(mappedBy="device")
+	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
+	private Preference preference; 
+	
+	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
 	private Profile profile; 
 	
 	public Device() {}
