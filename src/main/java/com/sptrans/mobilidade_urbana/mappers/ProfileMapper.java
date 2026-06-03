@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import com.sptrans.mobilidade_urbana.dto.ProfileDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
-import com.sptrans.mobilidade_urbana.entities.Preference;
 import com.sptrans.mobilidade_urbana.entities.Profile;
 
 import jakarta.persistence.EntityManager;
@@ -20,7 +19,7 @@ public class ProfileMapper {
 		this.entityManager = entityManager;
 	}
 	
-	public Profile toEntity(ProfileDTO dto, UUID deviceId, UUID profileId) {
+	public Profile toEntity(ProfileDTO dto, UUID deviceId) {
 		
 		Profile profile = new Profile();
 		
@@ -28,7 +27,6 @@ public class ProfileMapper {
 		profile.setCreatedAt(dto.getCreatedAt());
 		profile.setUpdatedAt(dto.getUpdatedAt());
 		profile.setDevice(entityManager.getReference(Device.class, deviceId));
-		profile.setPreference(entityManager.getReference(Preference.class, profileId));
 		
 		return profile;
 	}

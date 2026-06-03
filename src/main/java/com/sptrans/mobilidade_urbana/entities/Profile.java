@@ -37,19 +37,19 @@ public class Profile {
 	private Device device;
 	
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="preference_id", nullable=false, unique=true)
+	@JoinColumn(name="preference_id", nullable=true, unique=true)
 	private Preference preference;
 	
-	@OneToMany(mappedBy="profile")
+	@OneToMany(mappedBy="profile", orphanRemoval=true)
 	private List<FavoriteRoute> favoriteRoutes = new ArrayList<>();
 	
-	@OneToMany(mappedBy="profile")
+	@OneToMany(mappedBy="profile", orphanRemoval=true)
 	private List<FavoriteTrip> favoriteTrips = new ArrayList<>();
 	
-	@OneToMany(mappedBy="profile")
+	@OneToMany(mappedBy="profile", orphanRemoval=true)
 	private List<Alert> alerts = new ArrayList<>();
 	
-	@OneToMany(mappedBy="profile")
+	@OneToMany(mappedBy="profile", orphanRemoval=true)
 	private List<Notification> notifications = new ArrayList<>();
 	
 	public Profile() {}

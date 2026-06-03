@@ -30,10 +30,7 @@ public class Device {
 	@Column(nullable = false)
 	private Integer tokenVersion = 0;
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private LocalDateTime createdAt;
-	
-	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
-	private Preference preference; 
+	private LocalDateTime createdAt; 
 	
 	@OneToOne(mappedBy="device", cascade=CascadeType.ALL)
 	private Profile profile; 

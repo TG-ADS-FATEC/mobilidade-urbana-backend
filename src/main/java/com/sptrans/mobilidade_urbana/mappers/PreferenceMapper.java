@@ -1,25 +1,14 @@
 package com.sptrans.mobilidade_urbana.mappers;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.sptrans.mobilidade_urbana.dto.PreferenceDTO;
-import com.sptrans.mobilidade_urbana.entities.Device;
 import com.sptrans.mobilidade_urbana.entities.Preference;
-
-import jakarta.persistence.EntityManager;
 
 @Component
 public class PreferenceMapper {
 	
-	private final EntityManager entityManager;
-
-	public PreferenceMapper(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
-	
-	public Preference toEntity(PreferenceDTO dto, UUID deviceId) {
+	public Preference toEntity(PreferenceDTO dto) {
 		
 		Preference preference = new Preference();
 		
@@ -29,7 +18,6 @@ public class PreferenceMapper {
 		preference.setMaxWalkingTime(dto.getMaxWalkingTime());
 		preference.setCreatedAt(dto.getCreatedAt());
 		preference.setUpdatedAt(dto.getUpdatedAt());
-		preference.setDevice(entityManager.getReference(Device.class, deviceId));
 		
 		return preference;
 	}

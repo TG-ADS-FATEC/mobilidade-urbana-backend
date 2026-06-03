@@ -10,10 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sptrans.mobilidade_urbana.dto.ProfileDTO;
 import com.sptrans.mobilidade_urbana.entities.Device;
-import com.sptrans.mobilidade_urbana.entities.Preference;
 import com.sptrans.mobilidade_urbana.entities.Profile;
 import com.sptrans.mobilidade_urbana.mappers.ProfileMapper;
-import com.sptrans.mobilidade_urbana.repositories.PreferenceRepository;
 import com.sptrans.mobilidade_urbana.repositories.ProfileRepository;
 import com.sptrans.mobilidade_urbana.services.exceptions.DatabaseException;
 import com.sptrans.mobilidade_urbana.services.exceptions.ResourceNotFoundException;
@@ -25,9 +23,6 @@ public class ProfileService {
 	
 	@Autowired
 	private ProfileRepository repository;
-	
-	@Autowired
-	private PreferenceRepository preferenceRepository;
 	
 	@Autowired
 	private ProfileMapper mapper;
@@ -43,10 +38,7 @@ public class ProfileService {
 	public ProfileDTO insert(Device device, ProfileDTO dto) {
 		Profile entity = new Profile();
 		
-		Preference preference = preferenceRepository.findByDevice_DeviceId(device.getDeviceId())
-		        .orElseThrow(() -> new ResourceNotFoundException("Preferência não encontrada"));
-		
-		entity = mapper.toEntity(dto, device.getDeviceId(), preference.getPreferenceId());
+		entity = mapper.toEntity(dto, device.getDeviceId());
 		
 		entity = repository.save(entity);
 		

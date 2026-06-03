@@ -43,17 +43,13 @@ public class Preference {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private LocalDateTime updatedAt;
 	
-	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="device_id", nullable=false, unique=true)
-	private Device device;
-	
 	@OneToOne(mappedBy="preference", cascade=CascadeType.ALL)
 	private Profile profile;
 	
 	public Preference() {}
-	
+
 	public Preference(UUID preferenceId, Set<TransportType> transportTypes, RoutePreference routePreference,
-			Boolean slowPace, Integer maxWalkingTime, LocalDateTime createdAt, LocalDateTime updatedAt, Device device) {
+			Boolean slowPace, Integer maxWalkingTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
 		this.preferenceId = preferenceId;
 		this.transportTypes = transportTypes;
@@ -62,7 +58,6 @@ public class Preference {
 		this.maxWalkingTime = maxWalkingTime;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.device = device;
 	}
 
 	@PrePersist
@@ -131,14 +126,6 @@ public class Preference {
 
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
-	}
-
-	public Device getDevice() {
-		return device;
-	}
-
-	public void setDevice(Device device) {
-		this.device = device;
 	}
 
 	public Profile getProfile() {
